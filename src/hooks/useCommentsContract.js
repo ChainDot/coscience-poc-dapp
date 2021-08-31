@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { CommentsContext } from "../contexts/CommentsContext"
 
 //pure function
@@ -28,13 +28,46 @@ const userCommentList = async (comments, listOfId) => {
   return commentList
 }
 
+// HOOKS
 export const useCommentsContract = () => {
   const [comments] = useContext(CommentsContext)
+
+  const [eventList, setEventList] = useState()
+
+  useEffect(() => {
+    if (comments) {
+      ;(async () => {
+        const eventArray = await comments.queryFilter("Posted")
+        const eventListArray = [
+          {
+            txHash: undefined,
+            timestamp: 0,
+            blockNumber: 0,
+            date: "",
+          },
+        ]
+        for (const event of eventArray) {
+          const block = await event.getBlock()
+          const date = new Date(block.timestamp * 1000)
+          const obj = {
+            // defined in the smart contract
+            txHash: event.transactionHash,
+            timestamp: block.timestamp,
+            blockNumber: event.blockNumber,
+            date: date.toLocaleString(),
+          }
+          eventListArray.push(obj)
+        }
+        setEventList(eventListArray)
+        // [{null},{event1 = reviewID n°1}]
+      })()
+    }
+  }, [comments])
 
   if (comments === undefined) {
     throw new Error(
       "It seems that you are trying to use CommentContext outside of its provider"
     )
   }
-  return [comments, getCommentData, userCommentList]
+  return [comments, getCommentData, userCommentList, eventList]
 }

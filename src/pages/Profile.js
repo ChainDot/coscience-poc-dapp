@@ -30,9 +30,9 @@ const Profile = () => {
         const userObj = await getUserData(users, id)
         // get user info from IPFS
 
-        const profileInfo = await readIPFS(userObj.profileCID) // {firstName,lastName,laboratory,bio}
-        const nameInfo = await readIPFS(userObj.nameCID)
-        setUser({ ...userObj, profileInfo, nameInfo })
+        const { email, laboratory, bio } = await readIPFS(userObj.profileCID)
+        const { firstName, lastName } = await readIPFS(userObj.nameCID)
+        setUser({ ...userObj, email, laboratory, bio, firstName, lastName })
       }
       userData()
     }

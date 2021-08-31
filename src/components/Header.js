@@ -1,12 +1,9 @@
 import React from "react"
 import {
-  chakra,
   Box,
   Flex,
   useColorModeValue,
-  VisuallyHidden,
   HStack,
-  Button,
   IconButton,
   useDisclosure,
   VStack,
@@ -14,12 +11,16 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
+  Heading,
+  Text,
+  Link,
 } from "@chakra-ui/react"
 import { HamburgerIcon, MoonIcon, SunIcon, Search2Icon } from "@chakra-ui/icons"
 
 import { useColorMode } from "@chakra-ui/react"
-import { Link } from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom"
 import { useUsersContract } from "../hooks/useUsersContract"
+import HeaderLinks from "./HeaderLinks"
 
 //in small sizeburgerMenu, close not only with cross but add a component for clicking outside menu too.
 const Header = () => {
@@ -32,8 +33,9 @@ const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode()
 
   return (
-    <React.Fragment>
-      <chakra.header
+    <>
+      <Box
+        zIndex="400"
         bg={bg}
         w="full"
         px={{ base: 2, sm: 4 }}
@@ -42,18 +44,16 @@ const Header = () => {
       >
         <Flex alignItems="center" justifyContent="space-between" mx="auto">
           <Flex>
-            <chakra.a
-              href="/"
-              title="Coscience Home Page"
-              display="flex"
-              alignItems="center"
-            >
-              <VisuallyHidden>Coscience</VisuallyHidden>
-            </chakra.a>
-            <chakra.h1 fontSize="xl" fontWeight="medium" ml="2">
-              Coscience
-            </chakra.h1>
+            <Heading as="h1" fontWeight="medium" ml="2">
+              <Link _hover={{ textDecoration: "none" }} as={RouterLink} to="/">
+                <Text as="span" color="orange.500">
+                  Co
+                </Text>
+                Science
+              </Link>
+            </Heading>
           </Flex>
+
           <HStack display="flex" alignItems="center" spacing={1}>
             <HStack
               spacing={3}
@@ -61,35 +61,7 @@ const Header = () => {
               color="brand.500"
               display={{ base: "none", lg: "inline-flex" }}
             >
-              <Button as={Link} to="/" variant="ghost">
-                Home
-              </Button>
-
-              <Button
-                disabled={user.id === undefined}
-                as={Link}
-                to={`/profile/${user.id}`}
-                variant="ghost"
-              >
-                Profile
-              </Button>
-
-              <Button as={Link} to="/list-of-users" variant="ghost">
-                List of users
-              </Button>
-
-              <Button variant="ghost" as={Link} to="/upload-article">
-                Upload Article
-              </Button>
-              <Button variant="ghost" as={Link} to="/about">
-                About
-              </Button>
-              <Button as={Link} to="/sign-up" colorScheme="teal" size="sm">
-                Sign up
-              </Button>
-              <IconButton variant="ghost" size="sm" onClick={toggleColorMode}>
-                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-              </IconButton>
+              <HeaderLinks user={user} />
             </HStack>
 
             <Box display={{ base: "inline-flex", lg: "none" }} zIndex="sticky">
@@ -109,7 +81,6 @@ const Header = () => {
                 left={0}
                 right={0}
                 display={mobileNav.isOpen ? "flex" : "none"}
-                flexDirection="column"
                 p={2}
                 pb={4}
                 m={2}
@@ -123,30 +94,11 @@ const Header = () => {
                   onClick={mobileNav.onClose}
                 />
 
-                <Button as={Link} to="/" w="full" variant="ghost">
-                  Home
-                </Button>
-                <Button
-                  as={Link}
-                  disabled={user.id === undefined}
-                  to={`/profile/${user.id}`}
-                  variant="ghost"
-                  w="full"
-                >
-                  Profile
-                </Button>
-                <Button as={Link} to="/list-of-users" w="full" variant="ghost">
-                  List of users
-                </Button>
-                <Button as={Link} to="/upload-article" w="full" variant="ghost">
-                  Upload Article
-                </Button>
-                <Button as={Link} to="/about" w="full" variant="ghost">
-                  About
-                </Button>
-                <Button as={Link} to="/sign-up" w="full" variant="ghost">
-                  Sign up
-                </Button>
+                <HeaderLinks
+                  user={user}
+                  isOpen={mobileNav.isOpen}
+                  onClose={mobileNav.onClose}
+                />
               </VStack>
             </Box>
             <HStack
@@ -154,6 +106,10 @@ const Header = () => {
               display={mobileNav.isOpen ? "none" : "flex"}
               alignItems="center"
             >
+              <IconButton variant="ghost" size="sm" onClick={toggleColorMode}>
+                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+              </IconButton>
+
               <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
@@ -164,8 +120,8 @@ const Header = () => {
             </HStack>
           </HStack>
         </Flex>
-      </chakra.header>
-    </React.Fragment>
+      </Box>
+    </>
   )
 }
 

@@ -14,17 +14,13 @@
 
 ## TODO in this repo
 
-- /article/:id => Display in a prettier way, separation between Article / Review / ...❌
-- refactoring of Header (wrap into a list)❌
+- refactoring Profile ❌
 - add color theme in Chakra (create a little graphical charter)❌
-- add change profile Settings => input (bio, laboratoire)❌
-- get the timestamp of each Article/Review/Comment and why not Users. [Use events...]❌
-- diplay timestamp correctly ❌
-- problem with multiple list of user (RecoverAccount & ListOfUser)❌
+- problem with multiple list of user (RecoverAccount & ListOfUser in the hook)❌
 - Import PDF and pin it to IPFS (use pinata.fromFS)❌
 - Unpin content if TX fail❌
-- Refactoring of components (Article in priority, with the crawler maybe)❌
 - Crawler with `react-router-dom`❌
+- manage article/undefined article❌
 
 ```js
 articleInfo = {
@@ -37,6 +33,8 @@ articleInfo = {
 ## TODO in the backend
 
 - deployment on several blockchain (matic & bsc) with the same address ❌
+- add metrics❌
+- put articleID on indexed ! And author ID❌
 
 ## TODO in data architecture
 

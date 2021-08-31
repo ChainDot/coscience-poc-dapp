@@ -31,14 +31,24 @@ const ArticleList = ({ articleList }) => {
               border="gray solid"
               borderWidth="1"
             >
-              <Text
-                as="span"
-                fontSize="xs"
-                textTransform="uppercase"
-                color="gray"
-              >
-                Article n°{article.id}
-              </Text>
+              <Flex justifyContent="space-between">
+                <Text
+                  as="span"
+                  fontSize="xs"
+                  textTransform="uppercase"
+                  color="gray"
+                >
+                  Article n°{article.id}
+                </Text>
+                <Text
+                  as="span"
+                  fontSize="xs"
+                  textTransform="uppercase"
+                  color="gray"
+                >
+                  {article.date}
+                </Text>
+              </Flex>
               <Heading
                 _hover={{ textDecoration: "underline" }}
                 display="block"

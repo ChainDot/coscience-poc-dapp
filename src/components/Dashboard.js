@@ -163,11 +163,7 @@ const Dashboard = ({ user }) => {
       </Box>
 
       {/* SETTINGS MODAL */}
-      <Modal
-        closeOnOverlayClick={false}
-        isOpen={isOpenSetting}
-        onClose={onCloseSetting}
-      >
+      <Modal size="lg" isOpen={isOpenSetting} onClose={onCloseSetting}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Settings</ModalHeader>
@@ -180,7 +176,7 @@ const Dashboard = ({ user }) => {
 
       {/* USER PROFILE */}
       <Heading my="4" as="h2">
-        {user.nameInfo.firstName} {user.nameInfo.lastName}{" "}
+        {user.firstName} {user.lastName}{" "}
         <Link
           isTruncated
           isExternal
@@ -199,10 +195,10 @@ const Dashboard = ({ user }) => {
       3. Profile.js: wrong CIDs are catched in the key .info
       4. SO: user.info === user.profileCID if the CID is false
       */}
-
-      <Text>Laboratory: {user.profileInfo.laboratory}</Text>
+      <Text>E-mail: {user.email}</Text>
+      <Text>Laboratory: {user.laboratory}</Text>
       <Text fontWeight="bold">Bio:</Text>
-      <Text>{user.profileInfo.bio}</Text>
+      <Text>{user.bio}</Text>
 
       <Button
         my="6"

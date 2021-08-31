@@ -1,12 +1,5 @@
-import { PlusSquareIcon, RepeatIcon } from "@chakra-ui/icons"
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  TagLabel,
-  Textarea,
-} from "@chakra-ui/react"
+import { EditIcon, PlusSquareIcon, RepeatIcon } from "@chakra-ui/icons"
+import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react"
 import { ethers } from "ethers"
 import { useState } from "react"
 import { useIPFS } from "../hooks/useIPFS"
@@ -17,6 +10,7 @@ const UserSetting = ({ user }) => {
   const [users] = useUsersContract()
   const [pinJsObject, , ipfsStatus] = useIPFS()
   const [status, contractCall] = useMetamask()
+
   const [addInput, setAddInput] = useState({
     address: false,
     password: false,
@@ -24,8 +18,8 @@ const UserSetting = ({ user }) => {
   })
   const [input, setInput] = useState("")
 
-  const [laboratory, setLaboratory] = useState("")
-  const [bio, setBio] = useState("")
+  const [laboratory, setLaboratory] = useState(user.laboratory)
+  const [bio, setBio] = useState(user.bio)
 
   async function addWallet(code) {
     switch (code) {
@@ -93,6 +87,37 @@ const UserSetting = ({ user }) => {
     }
   }
 
+  async function changeProfile(code) {
+    switch (code) {
+      case 0:
+        setAddInput({ address: false, password: false, edit: true })
+        break
+      case 1:
+        const profileObj = {
+          version: 0.1,
+          laboratory,
+          bio,
+          userInfo: user.nameCID,
+        }
+        console.log(profileObj)
+
+        const profileCID = await pinJsObject(profileObj)
+
+        await contractCall(users, "editProfile", [profileCID])
+
+        console.log(profileObj)
+
+        setAddInput({ ...addInput, edit: false })
+
+        break
+      case 2:
+        setAddInput({ address: false, password: false, edit: false })
+        break
+      default:
+        return false
+    }
+  }
+
   return (
     <>
       <Button
@@ -123,10 +148,11 @@ const UserSetting = ({ user }) => {
         onClick={() => changeProfile(0)}
         colorScheme="messenger"
         transition="0.3s "
-        aria-label="edit profile"
-        rightIcon={<RepeatIcon />}
+        aria-label="Change profile"
+        variant="outline"
+        rightIcon={<EditIcon />}
       >
-        Profile
+        Edit profile
       </Button>
       {addInput.address ? (
         <>
@@ -143,9 +169,11 @@ const UserSetting = ({ user }) => {
           </FormControl>
           <Button
             isLoading={
-              status.startsWith("Waiting") || status.startsWith("Pending")
+              status.startsWith("Waiting") ||
+              status.startsWith("Pending") ||
+              ipfsStatus.startsWith("Pinning")
             }
-            loadingText={status}
+            loadingText={ipfsStatus.startsWith("Pinning") ? ipfsStatus : status}
             disabled={
               !input.length ||
               status.startsWith("Waiting") ||
@@ -180,9 +208,11 @@ const UserSetting = ({ user }) => {
           </FormControl>
           <Button
             isLoading={
-              status.startsWith("Waiting") || status.startsWith("Pending")
+              status.startsWith("Waiting") ||
+              status.startsWith("Pending") ||
+              ipfsStatus.startsWith("Pinning")
             }
-            loadingText={status}
+            loadingText={ipfsStatus.startsWith("Pinning") ? ipfsStatus : status}
             disabled={
               !input.length ||
               status.startsWith("Waiting") ||
@@ -206,35 +236,38 @@ const UserSetting = ({ user }) => {
       ) : addInput.edit ? (
         <>
           <FormControl>
-            <FormLabel>Edit Profile</FormLabel>
-            <TagLabel>Laboratory</TagLabel>
+            <FormLabel>Change laboratory:</FormLabel>
             <Input
               mb="4"
               value={laboratory}
               onChange={(e) => setLaboratory(e.target.value)}
-              placeholder="laboratory"
-              bg="white"
-            />
-            <TagLabel>Biography</TagLabel>
-            <Textarea
-              mb="4"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="biography"
+              placeholder="MIT"
               bg="white"
             />
           </FormControl>
+          <FormControl>
+            <FormLabel>Change bio:</FormLabel>
+            <Input
+              mb="4"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Your experience..."
+              bg="white"
+            />
+          </FormControl>
+
           <Button
             isLoading={
-              status.startsWith("Waiting") || status.startsWith("Pending")
+              status.startsWith("Waiting") ||
+              status.startsWith("Pending") ||
+              ipfsStatus.startsWith("Pinning")
             }
-            loadingText={status}
+            loadingText={ipfsStatus.startsWith("Pinning") ? ipfsStatus : status}
             disabled={
               !laboratory.length ||
               !bio.length ||
               status.startsWith("Waiting") ||
-              status.startsWith("Pending") ||
-              ipfsStatus.startsWith("Pinning")
+              status.startsWith("Pending")
             }
             onClick={() => changeProfile(1)}
             colorScheme="green"
