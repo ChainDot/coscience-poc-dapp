@@ -6,6 +6,7 @@ import {
   Link,
   useColorModeValue,
 } from "@chakra-ui/react"
+import { Link as RouterLink } from "react-router-dom"
 
 const Footer = () => {
   //color Mode
@@ -23,9 +24,15 @@ const Footer = () => {
           align={{ base: "center", md: "center" }}
         >
           <Stack direction="row" spacing={6}>
-            <Link href="/about">What is Coscience?</Link>
-            <Link href="/terms">Terms of use</Link>
-            <Link href="/privacy">Privacy</Link>
+            <Link as={RouterLink} to="/about">
+              What is Coscience?
+            </Link>
+            <Link as={RouterLink} to="/about">
+              Terms of use
+            </Link>
+            <Link as={RouterLink} to="/about">
+              Privacy
+            </Link>
           </Stack>
           <Text>© 2020 Chakra Templates. All rights reserved</Text>
         </Container>

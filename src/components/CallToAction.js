@@ -1,6 +1,15 @@
-import { Button, Stack, Heading, Text, Container } from "@chakra-ui/react"
+import {
+  Button,
+  Stack,
+  Heading,
+  Text,
+  Container,
+  useColorModeValue,
+} from "@chakra-ui/react"
 
 const CallToAction = () => {
+  const txt = useColorModeValue("gray.800", "white")
+
   return (
     <Container maxW={"5xl"}>
       <Stack
@@ -20,7 +29,7 @@ const CallToAction = () => {
           </Text>{" "}
           Science Platform
         </Heading>
-        <Text color={"gray.500"} maxW={"3xl"}>
+        <Text color={txt} fontSize="lg" maxW={"3xl"}>
           Science with collective intelligence and community governance
         </Text>
         <Stack spacing={6} direction={"row"}>

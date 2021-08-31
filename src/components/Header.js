@@ -59,7 +59,7 @@ const Header = () => {
               spacing={3}
               mr={1}
               color="brand.500"
-              display={{ base: "none", md: "inline-flex" }}
+              display={{ base: "none", lg: "inline-flex" }}
             >
               <Button as={Link} to="/" variant="ghost">
                 Home
@@ -92,9 +92,9 @@ const Header = () => {
               </IconButton>
             </HStack>
 
-            <Box display={{ base: "inline-flex", md: "none" }} zIndex="sticky">
+            <Box display={{ base: "inline-flex", lg: "none" }} zIndex="sticky">
               <IconButton
-                display={{ base: "flex", md: "none" }}
+                display={{ base: "flex", lg: "none" }}
                 aria-label="Open menu"
                 fontSize="20px"
                 color={useColorModeValue("gray.800", "inherit")}
@@ -126,8 +126,17 @@ const Header = () => {
                 <Button as={Link} to="/" w="full" variant="ghost">
                   Home
                 </Button>
-                <Button as={Link} to="/profile" w="full" variant="ghost">
+                <Button
+                  as={Link}
+                  disabled={user.id === undefined}
+                  to={`/profile/${user.id}`}
+                  variant="ghost"
+                  w="full"
+                >
                   Profile
+                </Button>
+                <Button as={Link} to="/list-of-users" w="full" variant="ghost">
+                  List of users
                 </Button>
                 <Button as={Link} to="/upload-article" w="full" variant="ghost">
                   Upload Article

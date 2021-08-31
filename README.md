@@ -15,6 +15,8 @@
 ## TODO in this repo
 
 - /article/:id => Display in a prettier way, separation between Article / Review / ...❌
+- refactoring of Header (wrap into a list)❌
+- add color theme in Chakra (create a little graphical charter)❌
 - add change profile Settings => input (bio, laboratoire)❌
 - get the timestamp of each Article/Review/Comment and why not Users. [Use events...]❌
 - diplay timestamp correctly ❌

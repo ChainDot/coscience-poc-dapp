@@ -1,4 +1,4 @@
-import { Box, Heading, useColorModeValue, Container } from "@chakra-ui/react"
+import { Box, useColorModeValue, Container } from "@chakra-ui/react"
 import { useState } from "react"
 import { useEffect } from "react"
 import ArticleList from "../components/ArticleList"
@@ -43,12 +43,9 @@ const Home = () => {
 
   return (
     <>
-      <Heading>
-        <CallToAction />
-      </Heading>
-
+      <CallToAction />
       <Box py="10" bg={bg}>
-        <Container maxW="container.xl">
+        <Container maxW={{ base: "container.sm", lg: "container.xl" }}>
           {articleListAuthor === undefined ? (
             <Loading />
           ) : articleListAuthor.length === 0 ? (

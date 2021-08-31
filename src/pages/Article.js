@@ -21,10 +21,10 @@ import { useCommentsContract } from "../hooks/useCommentsContract"
 import { useIPFS } from "../hooks/useIPFS"
 import { useReviewsContract } from "../hooks/useReviewsContract"
 import { useUsersContract } from "../hooks/useUsersContract"
-import Loading from "./Loading"
-import SendComment from "./SendComment"
+import Loading from "../components/Loading"
+import SendComment from "../components/SendComment"
 
-import SendReview from "./SendReview"
+import SendReview from "../components/SendReview"
 
 const articleReviewIds = async (reviews, article) => {
   if (reviews) {
@@ -180,7 +180,7 @@ const Article = () => {
   }
 
   const bg = useColorModeValue("white", "gray.800")
-
+  // --------------------------------------------------------------RETURN
   return (
     <>
       <Box py="10" bg={bg}>
