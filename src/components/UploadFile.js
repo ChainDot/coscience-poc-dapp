@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react"
+import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react"
 import { useIPFS } from "../hooks/useIPFS"
 
 const UploadFile = () => {
@@ -49,7 +49,9 @@ const UploadFile = () => {
       <FormControl>
         <FormLabel>Choose a file</FormLabel>
         <Input onChange={addFile} type="file" />
-        {pdfSrc && <embed src={pdfSrc} width="800px" height="1000px" />}
+        {pdfSrc && (
+          <Text as="embed" src={pdfSrc} width="800px" height="1000px" />
+        )}
       </FormControl>
 
       <Button

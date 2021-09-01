@@ -73,6 +73,7 @@ const UploadArticle = () => {
     // transform into CID
     let abstractCID = ""
     let contentCID = ""
+
     if (user.status === "Approved") {
       const body = { version: 0.1, content }
       contentCID = await pinJsObject(body)
