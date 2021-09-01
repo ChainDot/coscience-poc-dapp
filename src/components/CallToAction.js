@@ -22,23 +22,19 @@ const CallToAction = () => {
           fontWeight={600}
           fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
           lineHeight={"110%"}
+          fontFamily="title"
         >
           The{" "}
-          <Text as={"span"} color={"orange.400"}>
+          <Text as={"span"} color="main.500">
             Collective
           </Text>{" "}
           Science Platform
         </Heading>
-        <Text color={txt} fontSize="lg" maxW={"3xl"}>
+        <Text fontFamily="text" color={txt} fontSize="lg" maxW={"3xl"}>
           Science with collective intelligence and community governance
         </Text>
         <Stack spacing={6} direction={"row"}>
-          <Button
-            rounded={"full"}
-            px={6}
-            colorScheme={"orange"}
-            bg={"orange.400"}
-          >
+          <Button rounded={"full"} px={6} colorScheme={"orange"}>
             Get started
           </Button>
           <Button rounded={"full"} px={6}>

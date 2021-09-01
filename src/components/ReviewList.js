@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { useIPFS } from "../hooks/useIPFS"
 import { useReviewsContract } from "../hooks/useReviewsContract"
 import { useUsersContract } from "../hooks/useUsersContract"
+import { Box } from "@chakra-ui/react"
 
 const articleReviewIds = async (reviews, article) => {
   if (reviews) {
@@ -72,7 +73,7 @@ const ReviewList = ({ article }) => {
       {reviewList !== undefined
         ? reviewList.map((review) => {
             return (
-              <>
+              <Box key={review.id}>
                 <Heading>{review.title}</Heading>
                 <Text>
                   {review.firstName} {review.lastName}
@@ -82,7 +83,7 @@ const ReviewList = ({ article }) => {
                 <Text>{review.txHash}</Text>
                 <Text>{review.blockNumber}</Text>
                 <Text>Number of comments: {review.comments.length}</Text>
-              </>
+              </Box>
             )
           })
         : ""}

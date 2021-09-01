@@ -26,7 +26,7 @@ const UploadArticle = () => {
   const [articles] = useArticlesContract()
   const [, user] = useUsersContract()
   const [status, contractCall] = useMetamask()
-  const [pinJsObject, , ipfsStatus] = useIPFS()
+  const [pinJsObject, , ipfsStatus, , unPin] = useIPFS()
 
   const [abstract, setAbstract] = useState("")
   const [content, setContent] = useState("")
@@ -79,20 +79,27 @@ const UploadArticle = () => {
       const header = { version: 0.1, title, abstract, content: contentCID }
       abstractCID = await pinJsObject(header)
     }
+
     // push to the blockchain
-    await contractCall(articles, "publish", [
+    const tx = await contractCall(articles, "publish", [
       coAuthorArray,
       abstractCID,
       contentCID,
     ])
+
+    // unpin content if revert
+    if (user.status === "Approved") {
+      if (tx === "Error") {
+        await unPin(abstractCID)
+        await unPin(contentCID)
+      }
+    }
+
     // reset inputs
     setAbstract("")
     setCoAuthors([])
     setContent("")
     setTitle("")
-
-    // ADD PDF ON IPFS
-    // PDF CID will be registered in the Obj of the article
   }
 
   return (

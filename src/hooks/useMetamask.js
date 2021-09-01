@@ -85,6 +85,7 @@ export const useMetamask = () => {
         duration: 7000,
         isClosable: true,
       })
+      tx = "Error"
     }
 
     return tx

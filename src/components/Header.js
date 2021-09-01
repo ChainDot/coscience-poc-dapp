@@ -44,7 +44,7 @@ const Header = () => {
       >
         <Flex alignItems="center" justifyContent="space-between" mx="auto">
           <Flex>
-            <Heading as="h1" fontWeight="medium" ml="2">
+            <Heading fontWeight="bold" fontFamily="title" as="h1" ml="2">
               <Link _hover={{ textDecoration: "none" }} as={RouterLink} to="/">
                 <Text as="span" color="orange.500">
                   Co

@@ -187,10 +187,11 @@ const Article = () => {
           )}
           <Flex>
             <Button onClick={onOpen} colorScheme="teal" me="4">
-              Reviews (...)
+              Reviews ({article !== undefined ? article.reviews.length : "..."})
             </Button>
             <Button onClick={onOpen} colorScheme="teal">
-              Comments (...)
+              Comments (
+              {article !== undefined ? article.comments.length : "..."})
             </Button>
           </Flex>
         </Container>
@@ -213,8 +214,14 @@ const Article = () => {
             {/* TABS */}
             <Tabs size="md" variant="enclosed">
               <TabList>
-                <Tab>Reviews (...)</Tab>
-                <Tab>Comments (...)</Tab>
+                <Tab>
+                  Reviews (
+                  {article !== undefined ? article.reviews.length : "..."})
+                </Tab>
+                <Tab>
+                  Comments (
+                  {article !== undefined ? article.comments.length : "..."})
+                </Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>

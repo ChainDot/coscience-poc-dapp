@@ -4,13 +4,14 @@ import "./index.css"
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
 import { Web3Provider } from "web3-hooks"
-import { ChakraProvider } from "@chakra-ui/react"
+import { ChakraProvider, extendTheme } from "@chakra-ui/react"
 import { BrowserRouter as Router } from "react-router-dom"
+import { styles } from "./theme/index"
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <ChakraProvider>
+      <ChakraProvider theme={extendTheme(styles)}>
         <Web3Provider>
           <App />
         </Web3Provider>

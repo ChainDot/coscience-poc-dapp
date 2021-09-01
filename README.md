@@ -2,9 +2,10 @@
 
 ## GuideLine
 
-- 15min presentation (why blockchain, add technical schema)
-- 15min Demo (prepare scenario and wallet with name)
-- 15min code presentation (make plan for what we will present):
+- 5min Presentation (add architecture & technologie schema)
+- 10min Demo (register, reverts, publish, post, edit profile)
+- 15min Code (50/50 back/front)
+
   - README cascade of contracts deployments schema
   - hardhat project => contracts => test => scripts
   - dapp:
@@ -12,15 +13,50 @@
     - select important component to show
     - present hooks for IPFS & contract
 
+## Graphical charter
+
+Colors:
+Main color: `#ff5a23`  
+Secondary color: `#17b7ff`
+
+white on main: `#c42200`  
+dark on main: `#ff8d51`  
+white on secondary: `#0087cb`  
+dark on secondary: `#6ee9ff`
+
+main gray: `#FFECE6`  
+secondary gray: `#F2FBFF`
+
+Fonts:  
+Need to fetch it
+Title: `Merriweather` or more fancy like `Forum` or `Elsie` But can be only a logo ! (avoid to load too much font in the Web App)  
+Text: `Lato`  
+Read-sans-serif: `Lato`  
+Read-serif: `Merriweather`
+
 ## TODO in this repo
 
-- refactoring Profile ❌
-- add color theme in Chakra (create a little graphical charter)❌
+- refactoring Profile responsive ❌
 - problem with multiple list of user (RecoverAccount & ListOfUser in the hook)❌
-- Import PDF and pin it to IPFS (use pinata.fromFS)❌
-- Unpin content if TX fail❌
+- Import PDF and pin it to IPFS (use pinata.fromFS) INTEGRATE to function publish ❌
+- PDF hash =>
+
+```js
+header: {
+  version: 0.1,
+  title: "Studies on ETH providers",
+  abstract: "So hard to built this....",
+  content: (hash) {
+    version: 0.1,
+    content: "For the moment nothing is done...",
+    pdfFile: hash
+    },
+}
+```
+
+- manage article/undefined article❌ => 404
+- add color theme in Chakra (create a little graphical charter)❌
 - Crawler with `react-router-dom`❌
-- manage article/undefined article❌
 
 ```js
 articleInfo = {
@@ -30,11 +66,17 @@ articleInfo = {
 }
 ```
 
+- REVIEW DAPP (inspect & write comment) => Architecture
+- README
+- MERGE with main
+
 ## TODO in the backend
 
 - deployment on several blockchain (matic & bsc) with the same address ❌
 - add metrics❌
 - put articleID on indexed ! And author ID❌
+- governance (see tomorrow the openzepplin live at 9PM)
+- ++ replace [] => mapping
 
 ## TODO in data architecture
 
