@@ -1,8 +1,9 @@
-import { Heading, Text } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useCommentsContract } from "../hooks/useCommentsContract"
 import { useIPFS } from "../hooks/useIPFS"
 import { useUsersContract } from "../hooks/useUsersContract"
+import Comment from "./Comment"
 
 const articleCommentIds = async (comments, article) => {
   if (comments) {
@@ -72,17 +73,9 @@ const CommentList = ({ article }) => {
       {commentList !== undefined
         ? commentList.map((comment) => {
             return (
-              <>
-                <Heading>Comment n°{comment.id}</Heading>
-                <Text>
-                  {comment.firstName} {comment.lastName}
-                </Text>
-                <Text>{comment.content}</Text>
-                <Text>{comment.date}</Text>
-                <Text>{comment.txHash}</Text>
-                <Text>{comment.blockNumber}</Text>
-                <Text>Number of comments: {comment.comments.length}</Text>
-              </>
+              <Box key={comment.id}>
+                <Comment comment={comment} />
+              </Box>
             )
           })
         : ""}

@@ -10,10 +10,17 @@ import { Link as RouterLink } from "react-router-dom"
 
 const Footer = () => {
   //color Mode
-  const bg = useColorModeValue("white", "gray.800")
+  const bg = useColorModeValue("white", "grayOrange.900")
   return (
     <>
-      <Box mt="auto" bg={bg}>
+      <Box
+        zIndex="500"
+        sx={{
+          boxShadow: `0px -1px 7px ${bg === "white" ? "#DDDDDD" : "#444444"}`,
+        }}
+        bg={bg}
+        mt="auto"
+      >
         <Container
           as={Stack}
           maxW={"6xl"}

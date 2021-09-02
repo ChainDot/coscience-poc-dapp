@@ -32,6 +32,8 @@ import Loading from "../components/Loading"
 import ArticleHeader from "../components/ArticleHeader"
 import ReviewList from "../components/ReviewList"
 import CommentList from "../components/CommentList"
+import SendReview from "../components/SendReview"
+import SendComment from "../components/SendComment"
 
 const Article = () => {
   const { id } = useParams()
@@ -174,7 +176,18 @@ const Article = () => {
                   >
                     Bibliographie
                   </Heading>
-                  <Text textAlign="center">Not implemented yet...</Text>
+                  <Text mb="10" textAlign="center">
+                    Not implemented yet...
+                  </Text>
+
+                  <Flex
+                    flexDirection={{ base: "column", lg: "row" }}
+                    justifyContent="space-between"
+                    mb="10"
+                  >
+                    <SendReview id={id} />
+                    <SendComment id={id} targetAddress={articles.address} />
+                  </Flex>
                 </Box>
               </>
             ) : (

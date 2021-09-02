@@ -88,28 +88,32 @@ Exemple:
 userInfo = { firstName: "", lastName: "", email: "" }
 ```
 
-- keep standards working with a version of this standard
-
 ```js
-userInfo = { version: 0.1, firstName: "", lastName: "" }
-userInfo = { version: 0.2, firstName: "", lastName: "", bio: "" }
+profileCID: String {
+  version: 0.1,
+  email: "rogert@food.com",
+  laboratory: "Ministry of Food",
+  bio: "Eat some Tacos...",
+  nameCID: String {
+    version: 0.1,
+    firstName: "Rogert",
+    lastName: "Culinaire"
+  },
+}
 ```
 
 - save permanent information like name
 
 ```js
-userInfo = {
-  version: 0.3,
-  bio: "A",
-  laboratory: "A",
-  userInfo: "bafkreibbo5dlexsozwr5ac34lfuy6bwq4ixcj5wx5injqa74mlq5wybgs4",
-}
-
-newUserInfo = {
-  version: 0.3,
-  bio: "B",
-  laboratory: "B",
-  userInfo: "bafkreibbo5dlexsozwr5ac34lfuy6bwq4ixcj5wx5injqa74mlq5wybgs4",
+abstractCID: String {
+  version: 0.1,
+  title: "Studies on ETH providers",
+  abstract: "So hard to built this....",
+  content: String {
+    version: 0.1,
+    content: "For the moment nothing is done...",
+    pdfFile: String // new feature, almost all articles in this version do not have this key
+    },
 }
 ```
 
@@ -119,12 +123,8 @@ newUserInfo = {
 
 ### Version 0.1
 
-Users:
-
 ```js
-{
-version: 0.1,
-userInfo: {
+contentCID: String {
   version: 0.1,
   firstName: "Rogert",
   lastName: "Culinaire"

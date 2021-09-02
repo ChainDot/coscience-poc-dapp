@@ -1,12 +1,12 @@
-import { Heading, Text } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import { useState } from "react"
 import { useEffect } from "react"
 import { useIPFS } from "../hooks/useIPFS"
 import { useReviewsContract } from "../hooks/useReviewsContract"
 import { useUsersContract } from "../hooks/useUsersContract"
 import { Box } from "@chakra-ui/react"
-import ReviewHeader from "./ReviewHeader"
-
+import Review from "./Review"
+import SendComment from "./SendComment"
 const articleReviewIds = async (reviews, article) => {
   if (reviews) {
     const nb = article.reviews.length
@@ -75,16 +75,10 @@ const ReviewList = ({ article }) => {
         ? reviewList.map((review) => {
             return (
               <Box key={review.id}>
-                <ReviewHeader review={review} />
-                {/* <Heading>{review.title}</Heading>
-                <Text>
-                  {review.firstName} {review.lastName}
-                </Text>
+                <Review review={review} />
+
                 <Text>{review.content}</Text>
-                <Text>{review.date}</Text>
-                <Text>{review.txHash}</Text>
-                <Text>{review.blockNumber}</Text>
-                <Text>Number of comments: {review.comments.length}</Text> */}
+                <SendComment />
               </Box>
             )
           })
