@@ -4,6 +4,7 @@ import { useCommentsContract } from "../hooks/useCommentsContract"
 import { useIPFS } from "../hooks/useIPFS"
 import { useUsersContract } from "../hooks/useUsersContract"
 import Comment from "./Comment"
+import SendComment from "./SendComment"
 
 const articleCommentIds = async (comments, article) => {
   if (comments) {
@@ -75,6 +76,7 @@ const CommentList = ({ article }) => {
             return (
               <Box key={comment.id}>
                 <Comment comment={comment} />
+                <SendComment id={comment.id} targetAddress={comments.address} />
               </Box>
             )
           })

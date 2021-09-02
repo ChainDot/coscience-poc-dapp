@@ -77,8 +77,7 @@ const ReviewList = ({ article }) => {
               <Box key={review.id}>
                 <Review review={review} />
 
-                <Text>{review.content}</Text>
-                <SendComment />
+                <SendComment id={review.id} targetAddress={reviews.address} />
               </Box>
             )
           })

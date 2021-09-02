@@ -55,7 +55,8 @@ const Article = () => {
 
         // get content
         const { title, abstract } = await readIPFS(articleObj.abstractCID)
-        const { content } = await readIPFS(articleObj.contentCID)
+        const { content, pdfFile } = await readIPFS(articleObj.contentCID)
+        console.log(pdfFile)
 
         // get user info
         const idAuthor = await users.profileID(articleObj.author)
@@ -85,6 +86,7 @@ const Article = () => {
           title,
           abstract,
           content,
+          pdfFile,
           authorID: idAuthor,
           firstName,
           lastName,
@@ -144,6 +146,7 @@ const Article = () => {
                       </Text>
                     )
                   })}
+
                   <Heading
                     fontSize="lg"
                     as="h3"
@@ -180,6 +183,22 @@ const Article = () => {
                     Not implemented yet...
                   </Text>
 
+                  <Box mb="10">
+                    <Button
+                      onClick={onOpen}
+                      variant="link"
+                      me="4"
+                      color="orange.500"
+                    >
+                      Reviews (
+                      {article !== undefined ? article.reviews.length : "..."})
+                    </Button>
+                    <Button onClick={onOpen} variant="link" color="orange.500">
+                      Comments (
+                      {article !== undefined ? article.comments.length : "..."})
+                    </Button>
+                  </Box>
+
                   <Flex
                     flexDirection={{ base: "column", lg: "row" }}
                     justifyContent="space-between"
@@ -198,15 +217,6 @@ const Article = () => {
           ) : (
             <Loading />
           )}
-          <Flex>
-            <Button onClick={onOpen} colorScheme="teal" me="4">
-              Reviews ({article !== undefined ? article.reviews.length : "..."})
-            </Button>
-            <Button onClick={onOpen} colorScheme="teal">
-              Comments (
-              {article !== undefined ? article.comments.length : "..."})
-            </Button>
-          </Flex>
         </Container>
       </Box>
 

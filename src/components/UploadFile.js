@@ -1,37 +1,11 @@
-import React, { useState } from "react"
-import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react"
-import { useIPFS } from "../hooks/useIPFS"
+import React, { useRef, useState } from "react"
+import { Box, Button, Flex, InputGroup, Text } from "@chakra-ui/react"
+import { AttachmentIcon } from "@chakra-ui/icons"
 
-const UploadFile = () => {
-  const [, , status, pinFile, unPin] = useIPFS()
-  const [file, setFile] = useState()
+const UploadFile = ({ file, setFile }) => {
   const [pdfSrc, setPdfSrc] = useState()
 
-  /*
-  const pinOnIpfs = async (file) => {
-    try {
-      let formatData = new FormData() // {}
-      formatData.append("file", file) // {"file": file} - PINATA {'file': readableStream}
-
-      console.log(process.env.REACT_APP_PINATA_KEY)
-      console.log(process.env.REACT_APP_PINATA_SECRET_KEY)
-
-      const hash = await axios
-        .post(`https://api.pinata.cloud/pinning/pinFileToIPFS`, formatData, {
-          headers: {
-            "Content-Type": `multipart/form-data; boundary=${formatData._boundary}`,
-            pinata_api_key: process.env.REACT_APP_PINATA_KEY,
-            pinata_secret_api_key: process.env.REACT_APP_PINATA_SECRET_KEY,
-          },
-        })
-        .then((result) => result.data.IpfsHash)
-      console.log(hash)
-      return hash
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  */
+  const inputRef = useRef(null)
 
   function addFile(e) {
     const url = URL.createObjectURL(e.target.files[0])
@@ -39,36 +13,31 @@ const UploadFile = () => {
     setPdfSrc(url)
   }
 
-  async function sendFile() {
-    const hash = await pinFile(file)
-    console.log(hash)
-  }
-
   return (
     <>
-      <FormControl>
-        <FormLabel>Choose a file</FormLabel>
-        <Input onChange={addFile} type="file" />
-        {pdfSrc && (
-          <Text as="embed" src={pdfSrc} width="800px" height="1000px" />
-        )}
-      </FormControl>
-
-      <Button
-        loadingText={status}
-        isLoading={status.startsWith("Pinning")}
-        disabled={file === undefined || status.startsWith("Pinning")}
-        onClick={sendFile}
-      >
-        Pin to IPFS
-      </Button>
-      <Button
-        onClick={() =>
-          unPin("bafkreicify3xzvy3ndpg4t43iy37mxmajdnxvjssgruijngval5dh7p7bu")
-        }
-      >
-        Unpin
-      </Button>
+      <InputGroup>
+        <input
+          onChange={addFile}
+          ref={inputRef}
+          type="file"
+          style={{ display: "none" }}
+        />
+        <Flex mb="4" alignItems="center">
+          <Button
+            display="flex"
+            me="4"
+            leftIcon={<AttachmentIcon />}
+            colorScheme="colorSecond"
+            onClick={() => inputRef.current.click()}
+          >
+            Choose a file
+          </Button>
+          <Text>{file?.name}</Text>
+        </Flex>
+      </InputGroup>
+      {pdfSrc && (
+        <Box mb="4" as="embed" src={pdfSrc} width="100%" height="500px" />
+      )}
     </>
   )
 }
