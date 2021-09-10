@@ -12,6 +12,7 @@ const getReviewData = async (reviews, id) => {
     contentBanned: r.contentBanned,
     targetID: r.targetID.toNumber(),
     comments: r.comments,
+    vote: r.vote.toNumber(),
   }
   return reviewObj
 }

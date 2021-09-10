@@ -22,7 +22,7 @@ const articleReviewIds = async (reviews, article) => {
 
 const ReviewList = ({ article }) => {
   const [reviews, , createReviewsList, eventList] = useReviewsContract()
-  const {users} = useUsersContract()
+  const { users } = useUsersContract()
   const [, readIPFS] = useIPFS()
 
   const [reviewList, setReviewList] = useState()
@@ -39,9 +39,24 @@ const ReviewList = ({ article }) => {
             // get the content from IFPS
             const { title, content } = await readIPFS(review.contentCID)
 
+            //get review vote
+            const structReview = await reviews.reviewInfo(review.id)
+            const { vote } = structReview
+
+            //get number of vote
+            let nbReviewVote = await reviews.filters.Voted(
+              null,
+              Number(review.id.toString(16)),
+              null
+            )
+
+            const eventArray = await reviews.queryFilter(nbReviewVote)
+            const nbVotes = eventArray.length
+
             // get user info
             const authorID = await users.profileID(review.author)
             const struct = await users.userInfo(authorID)
+
             const { firstName, lastName } = await readIPFS(struct.nameCID)
 
             // get event info
@@ -59,6 +74,8 @@ const ReviewList = ({ article }) => {
               timestamp,
               blockNumber,
               date,
+              vote,
+              nbVotes,
             }
           })
         )

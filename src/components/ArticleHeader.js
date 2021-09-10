@@ -8,6 +8,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react"
+import ArticleImportance from "./Articlemportance"
 
 import ArticleValidity from "./ArticleValidity"
 
@@ -60,6 +61,7 @@ const ArticleHeader = ({ id, article, eventList }) => {
               </Text>
 
               <ArticleValidity id={id} article={article} />
+              <ArticleImportance id={id} article={article} />
             </Box>
             <Box mt="4" fontSize="lg" textAlign={{ base: "start", lg: "end" }}>
               <Heading fontSize="xl">Blockchain informations</Heading>

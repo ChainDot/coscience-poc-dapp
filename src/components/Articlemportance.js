@@ -4,25 +4,26 @@ import { FaThumbsUp, FaThumbsDown } from "react-icons/fa"
 import { useArticlesContract } from "../hooks/useArticlesContract"
 import { useCall } from "../web3hook/useCall"
 
-const ArticleValidity = ({ id, article }) => {
+const ArticleImportance = ({ id, article }) => {
   const { articles } = useArticlesContract()
   const [status, contractCall] = useCall()
 
   console.log(article.validityVotes)
   console.log(article.importanceVotes)
 
-  async function VoteValidity(validity) {
-    await contractCall(articles, "voteValidity", [validity, id])
+  async function VoteImportance(importance) {
+    await contractCall(articles, "voteImportance", [importance, id])
   }
 
   return (
     <Flex alignItems="center" my="5" justifyContent="space-between">
-      <Text>Validity</Text>
-      <Box flex="1" textAlign="center">
+      <Text>Importance</Text>
+      <Box>
+        {" "}
         <IconButton
           aria-label="thumb ub"
           icon={<FaThumbsUp />}
-          onClick={() => VoteValidity(1)}
+          onClick={() => VoteImportance(1)}
           isLoading={
             status.startsWith("Waiting") || status.startsWith("Pending")
           }
@@ -33,7 +34,6 @@ const ArticleValidity = ({ id, article }) => {
           borderRadius="10px"
           me="1"
         />
-
         <IconButton
           aria-label="thumb down"
           icon={<FaThumbsDown />}
@@ -43,21 +43,21 @@ const ArticleValidity = ({ id, article }) => {
           disabled={
             status.startsWith("Waiting") || status.startsWith("Pending")
           }
-          onClick={() => VoteValidity(0)}
+          onClick={() => VoteImportance(0)}
           colorScheme="red"
           borderRadius="10px"
         />
       </Box>
 
       <Text>
-        Vote: {article.validityVotes - article.validity} /{" "}
-        {article.validityVotes}
+        Vote: {article.importanceVotes - article.importance} /{" "}
+        {article.importanceVotes}
       </Text>
     </Flex>
   )
 }
 
-export default ArticleValidity
+export default ArticleImportance
 
 // Voter 1 = +1
 // voter2 = -1

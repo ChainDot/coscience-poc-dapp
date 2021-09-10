@@ -14,7 +14,7 @@ import { useWeb3 } from "../web3hook/useWeb3"
 
 const SignUp = () => {
   const { state, connectToMetamask } = useWeb3()
-  const [, user] = useUsersContract()
+  const { user } = useUsersContract()
 
   //color Mode
   const bg = useColorModeValue("white", "gray.800")

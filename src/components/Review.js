@@ -24,6 +24,7 @@ import { Link as RouterLink } from "react-router-dom"
 import { useReviewsContract } from "../hooks/useReviewsContract"
 import CommentList from "./CommentList"
 import SendComment from "./SendComment"
+import VoteOnReview from "./VoteOnReview"
 
 const Review = ({ review }) => {
   const link = useColorModeValue("main", "second")
@@ -123,6 +124,8 @@ const Review = ({ review }) => {
               ? ""
               : `${review.comments.length} comments`}
           </Button>
+
+          <VoteOnReview id={review.id} review={review} />
           <Collapse in={isOpen} animateOpacity>
             <CommentList on={review} />
           </Collapse>

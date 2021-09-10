@@ -43,6 +43,8 @@ const Header = () => {
     })
   }, [userList])
 
+  const scheme = useColorModeValue("colorMain", "colorSecond")
+
   return (
     <>
       <Box
@@ -136,11 +138,12 @@ const Header = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   variant="outline"
-                  colorScheme="teal"
+                  colorScheme={scheme}
                   aria-label="Bell notification"
                   icon={<BellIcon />}
                   as={RouterLink}
                   to="/list-of-users"
+                  borderRadius="full"
                 />
                 <Badge
                   position="absolute"
