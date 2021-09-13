@@ -1,17 +1,9 @@
-import { EditIcon, PlusSquareIcon, RepeatIcon } from "@chakra-ui/icons"
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
-} from "@chakra-ui/react"
-import { ethers } from "ethers"
-import { useState } from "react"
-import { useIPFS } from "../hooks/useIPFS"
-import { useUsersContract } from "../hooks/useUsersContract"
-import { useCall } from "../web3hook/useCall"
+import { EditIcon, PlusSquareIcon } from '@chakra-ui/icons'
+import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
+import { useState } from 'react'
+import { useIPFS } from '../hooks/useIPFS'
+import { useUsersContract } from '../hooks/useUsersContract'
+import { useCall } from '../web3hook/useCall'
 
 const UserSetting = ({ user }) => {
   const { users } = useUsersContract()
@@ -20,48 +12,25 @@ const UserSetting = ({ user }) => {
 
   const [addInput, setAddInput] = useState({
     address: false,
-    password: false,
-    edit: false,
+    edit: false
   })
-  const [input, setInput] = useState("")
-  const [show, setShow] = useState(false)
-  const handleClick = () => setShow(!show)
+  const [input, setInput] = useState('')
 
   const [laboratory, setLaboratory] = useState(user.laboratory)
   const [bio, setBio] = useState(user.bio)
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState('')
 
   async function addWallet(code) {
     switch (code) {
       case 0:
-        setAddInput({ address: true, password: false, edit: false })
+        setAddInput({ address: true, edit: false })
         break
       case 1:
-        await contractCall(users, "addWallet", [input])
+        await contractCall(users, 'addWallet', [input])
         setAddInput({ ...addInput, address: false })
         break
       case 2:
-        setAddInput({ address: false, password: false, edit: false })
-        break
-      default:
-        return false
-    }
-  }
-
-  async function changePassword(code) {
-    switch (code) {
-      case 0:
-        setAddInput({ address: false, password: true, edit: false })
-        break
-      case 1:
-        const tx = await contractCall(users, "changePassword", [
-          ethers.utils.id(input),
-        ])
-        console.log(tx)
-        setAddInput({ ...addInput, password: false })
-        break
-      case 2:
-        setAddInput({ address: false, password: false, edit: false })
+        setAddInput({ address: false, edit: false })
         break
       default:
         return false
@@ -71,7 +40,7 @@ const UserSetting = ({ user }) => {
   async function changeProfile(code) {
     switch (code) {
       case 0:
-        setAddInput({ address: false, password: false, edit: true })
+        setAddInput({ address: false, edit: true })
         break
       case 1:
         const profileObj = {
@@ -79,15 +48,15 @@ const UserSetting = ({ user }) => {
           laboratory,
           bio,
           email,
-          userInfo: user.nameCID,
+          userInfo: user.nameCID
         }
 
         const profileCID = await pinJsObject(profileObj)
 
-        const tx = await contractCall(users, "editProfile", [profileCID])
+        const tx = await contractCall(users, 'editProfile', [profileCID])
 
         // unpin
-        if (tx === "Error") {
+        if (tx === 'Error') {
           await unPin(profileCID)
         } else {
           // unpin old content
@@ -98,7 +67,7 @@ const UserSetting = ({ user }) => {
 
         break
       case 2:
-        setAddInput({ address: false, password: false, edit: false })
+        setAddInput({ address: false, edit: false })
         break
       default:
         return false
@@ -108,122 +77,64 @@ const UserSetting = ({ user }) => {
   return (
     <>
       <Button
-        disabled={user.status !== "Approved" || addInput.address}
+        disabled={user.status !== 'Approved' || addInput.address}
         onClick={() => addWallet(0)}
-        colorScheme="messenger"
-        transition="0.3s "
-        aria-label="add Wallet"
+        colorScheme='messenger'
+        transition='0.3s '
+        aria-label='add Wallet'
         leftIcon={<PlusSquareIcon />}
       >
         Wallets
       </Button>
+
       <Button
-        ms="4"
-        disabled={user.status !== "Approved" || addInput.password}
-        onClick={() => changePassword(0)}
-        colorScheme="messenger"
-        transition="0.3s "
-        aria-label="Change password"
-        variant="outline"
-        rightIcon={<RepeatIcon />}
-      >
-        Password
-      </Button>
-      <Button
-        ms="4"
-        disabled={user.status !== "Approved" || addInput.edit}
+        ms='4'
+        disabled={user.status !== 'Approved' || addInput.edit}
         onClick={() => changeProfile(0)}
-        colorScheme="messenger"
-        transition="0.3s "
-        aria-label="Change profile"
-        variant="outline"
+        colorScheme='messenger'
+        transition='0.3s '
+        aria-label='Change profile'
+        variant='outline'
         rightIcon={<EditIcon />}
       >
         Edit profile
       </Button>
       {addInput.address ? (
         <>
-          {" "}
-          <FormControl transition="0.3s ">
+          {' '}
+          <FormControl transition='0.3s '>
             <FormLabel>Ethereum address:</FormLabel>
             <Input
-              mb="4"
+              mb='4'
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="0x0000000000000000000000000000000000000000"
-              bg="white"
+              placeholder='0x0000000000000000000000000000000000000000'
+              bg='white'
             />
           </FormControl>
           <Button
             isLoading={
-              status.startsWith("Waiting") ||
-              status.startsWith("Pending") ||
-              ipfsStatus.startsWith("Pinning")
+              status.startsWith('Waiting') ||
+              status.startsWith('Pending') ||
+              ipfsStatus.startsWith('Pinning')
             }
-            loadingText={ipfsStatus.startsWith("Pinning") ? ipfsStatus : status}
+            loadingText={ipfsStatus.startsWith('Pinning') ? ipfsStatus : status}
             disabled={
               !input.length ||
-              status.startsWith("Waiting") ||
-              status.startsWith("Pending")
+              status.startsWith('Waiting') ||
+              status.startsWith('Pending')
             }
             onClick={() => addWallet(1)}
-            colorScheme="green"
-            transition="0.3s"
+            colorScheme='green'
+            transition='0.3s'
           >
             Submit
           </Button>
           <Button
             onClick={() => addWallet(2)}
-            ms="4"
-            colorScheme="red"
-            transition="0.3s "
-          >
-            Cancel
-          </Button>
-        </>
-      ) : addInput.password ? (
-        <>
-          <FormControl>
-            <FormLabel>New password:</FormLabel>
-            <InputGroup>
-              <Input
-                mb="4"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                type={show ? "text" : "password"}
-                placeholder="************"
-                bg="white"
-              />
-              <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={handleClick}>
-                  {show ? "Hide" : "Show"}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-          <Button
-            isLoading={
-              status.startsWith("Waiting") ||
-              status.startsWith("Pending") ||
-              ipfsStatus.startsWith("Pinning")
-            }
-            loadingText={ipfsStatus.startsWith("Pinning") ? ipfsStatus : status}
-            disabled={
-              !input.length ||
-              status.startsWith("Waiting") ||
-              status.startsWith("Pending")
-            }
-            onClick={() => changePassword(1)}
-            colorScheme="green"
-            transition="0.3s "
-          >
-            Submit
-          </Button>
-          <Button
-            onClick={() => changePassword(2)}
-            ms="4"
-            colorScheme="red"
-            transition="0.3s "
+            ms='4'
+            colorScheme='red'
+            transition='0.3s '
           >
             Cancel
           </Button>
@@ -233,65 +144,65 @@ const UserSetting = ({ user }) => {
           <FormControl>
             <FormLabel>Change laboratory:</FormLabel>
             <Input
-              mb="4"
+              mb='4'
               value={laboratory}
               onChange={(e) => setLaboratory(e.target.value)}
-              placeholder="MIT"
-              bg="white"
+              placeholder='MIT'
+              bg='white'
             />
           </FormControl>
           <FormControl>
             <FormLabel>Change email:</FormLabel>
             <Input
-              mb="4"
+              mb='4'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              bg="white"
+              placeholder='your@email.com'
+              bg='white'
             />
           </FormControl>
           <FormControl>
             <FormLabel>Change bio:</FormLabel>
             <Input
-              mb="4"
+              mb='4'
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Your experience..."
-              bg="white"
+              placeholder='Your experience...'
+              bg='white'
             />
           </FormControl>
 
           <Button
             isLoading={
-              status.startsWith("Waiting") ||
-              status.startsWith("Pending") ||
-              ipfsStatus.startsWith("Pinning")
+              status.startsWith('Waiting') ||
+              status.startsWith('Pending') ||
+              ipfsStatus.startsWith('Pinning')
             }
-            loadingText={ipfsStatus.startsWith("Pinning") ? ipfsStatus : status}
+            loadingText={ipfsStatus.startsWith('Pinning') ? ipfsStatus : status}
             disabled={
               !laboratory.length ||
               !bio.length ||
-              status.startsWith("Waiting") ||
-              status.startsWith("Pending") ||
-              ipfsStatus.startsWith("Pinning")
+              status.startsWith('Waiting') ||
+              status.startsWith('Pending') ||
+              ipfsStatus.startsWith('Pinning')
             }
             onClick={() => changeProfile(1)}
-            colorScheme="green"
-            transition="0.3s "
+            colorScheme='green'
+            transition='0.3s '
           >
             Submit
           </Button>
           <Button
             onClick={() => changeProfile(2)}
-            ms="4"
-            colorScheme="red"
-            transition="0.3s "
+            ms='4'
+            colorScheme='red'
+            transition='0.3s '
           >
             Cancel
           </Button>
         </>
       ) : (
-        ""
+        ''
       )}
     </>
   )

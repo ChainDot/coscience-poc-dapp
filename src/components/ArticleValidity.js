@@ -8,17 +8,14 @@ const ArticleValidity = ({ id, article }) => {
   const { articles } = useArticlesContract()
   const [status, contractCall] = useCall()
 
-  console.log(article.validityVotes)
-  console.log(article.importanceVotes)
-
   async function VoteValidity(validity) {
     await contractCall(articles, "voteValidity", [validity, id])
   }
 
   return (
-    <Flex alignItems="center" my="5" justifyContent="space-between">
-      <Text>Validity</Text>
-      <Box flex="1" textAlign="center">
+    <Flex alignItems="center" my="2">
+      <Text me="5">Validity</Text>
+      <Box me="5">
         <IconButton
           aria-label="thumb ub"
           icon={<FaThumbsUp />}
@@ -29,9 +26,9 @@ const ArticleValidity = ({ id, article }) => {
           disabled={
             status.startsWith("Waiting") || status.startsWith("Pending")
           }
-          colorScheme="green"
-          borderRadius="10px"
           me="1"
+          borderRadius="full"
+          colorScheme="green"
         />
 
         <IconButton
@@ -44,14 +41,12 @@ const ArticleValidity = ({ id, article }) => {
             status.startsWith("Waiting") || status.startsWith("Pending")
           }
           onClick={() => VoteValidity(0)}
+          borderRadius="full"
           colorScheme="red"
-          borderRadius="10px"
         />
       </Box>
-
       <Text>
-        Vote: {article.validityVotes - article.validity} /{" "}
-        {article.validityVotes}
+        {article.validityVotes - article.validity} / {article.validityVotes}
       </Text>
     </Flex>
   )

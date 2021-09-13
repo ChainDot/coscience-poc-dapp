@@ -1,9 +1,9 @@
-import detectEthereumProvider from "@metamask/detect-provider"
-import WalletConnectProvider from "@walletconnect/web3-provider"
-import { ethers } from "ethers"
-import { useEffect, useReducer, useRef, useState } from "react"
-import { reducer } from "./reducer"
-import { INFURA_ID } from "./apiKeys"
+import detectEthereumProvider from '@metamask/detect-provider'
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import { ethers } from 'ethers'
+import { useEffect, useReducer, useRef, useState } from 'react'
+import { reducer } from './reducer'
+import { INFURA_ID } from './apiKeys'
 
 /*
 This is a hook to connect to blockchain through several provider.
@@ -24,6 +24,7 @@ export const useProviders = () => {
   const isMounted = useRef(false)
 
   // State of the hook which will be exported
+
   const [state, dispatch] = useReducer(reducer, {
     providerType: undefined,
     ethersProvider: null,
@@ -33,7 +34,7 @@ export const useProviders = () => {
     signer: null,
     isLogged: false,
     account: ethers.constants.AddressZero,
-    balance: 0,
+    balance: 0
   })
   // Extraction of keys of the hook state
   const { providerType, ethersProvider, networkName, account, providerSrc } =
@@ -42,20 +43,20 @@ export const useProviders = () => {
   // 1. Get a provider
   // Some options are stored in the local storage to guide which provider the useEffect have to fetch
   useEffect(() => {
-    console.log("1. Get a provider")
+    console.log('1. Get a provider')
     // Read options in the local storage
-    const walletConnect = window.localStorage.getItem("wallet-connect")
-    const network = window.localStorage.getItem("switched-network")
+    const walletConnect = window.localStorage.getItem('wallet-connect')
+    const network = window.localStorage.getItem('switched-network')
     ;(async () => {
       // Connexion to wallet connect initiated
       // Can't store the connection since the page is reloaded
       if (walletConnect) {
         // connexion to WC
-        console.log("connexion to WC")
+        console.log('connexion to WC')
         window.localStorage.clear()
         // Get wallet connect provider
         const walletConnectProvider = new WalletConnectProvider({
-          infuraId: INFURA_ID,
+          infuraId: INFURA_ID
         })
         try {
           await walletConnectProvider.enable()
@@ -92,20 +93,20 @@ export const useProviders = () => {
       isMounted.current = true
     } else {
       if (ethersProvider === null) {
-        console.log("2. Wrap the provider(s)")
+        console.log('2. Wrap the provider(s)')
 
         // Try to wrap the providers into a Web3Provider (Metamask & Wallet Connect)
         try {
           const web3Provider = new ethers.providers.Web3Provider(
             provider,
-            "any"
+            'any'
           )
           const src = web3Provider.connection.url
           dispatch({
-            type: "SET_ETHERS_PROVIDER",
-            providerType: "Web3Provider",
+            type: 'SET_ETHERS_PROVIDER',
+            providerType: 'Web3Provider',
             wrappedProvider: web3Provider,
-            providerSrc: src,
+            providerSrc: src
           })
         } catch {
           // Create a fallback provider with the quorum of providers
@@ -114,10 +115,10 @@ export const useProviders = () => {
           )
           const src = `From quorum of ${fallbackProvider.providerConfigs.length} providers`
           dispatch({
-            type: "SET_ETHERS_PROVIDER",
-            providerType: "FallbackProvider",
+            type: 'SET_ETHERS_PROVIDER',
+            providerType: 'FallbackProvider',
             wrappedProvider: fallbackProvider,
-            providerSrc: src,
+            providerSrc: src
           })
         }
       }
@@ -127,18 +128,18 @@ export const useProviders = () => {
   // 3. Get informations from the EthersJS wrapped provider
   useEffect(() => {
     if (ethersProvider) {
-      console.log("3. Get informations")
+      console.log('3. Get informations')
       ;(async () => {
         // Get network informations
         const network = await ethersProvider.getNetwork()
         dispatch({
-          type: "SET_NETWORK",
+          type: 'SET_NETWORK',
           networkName: network.name,
-          chainId: network.chainId,
+          chainId: network.chainId
         })
 
         // Get account information (only in Web3Provider)
-        if (providerType === "Web3Provider") {
+        if (providerType === 'Web3Provider') {
           const signer = await ethersProvider.getSigner()
           let account
           try {
@@ -147,11 +148,11 @@ export const useProviders = () => {
 
             // Get balance of this account
             const balance = await ethersProvider.getBalance(account)
-            dispatch({ type: "SET_BALANCE", balance })
+            dispatch({ type: 'SET_BALANCE', balance })
           } catch {
             account = ethers.constants.AddressZero
           }
-          dispatch({ type: "SET_ACCOUNT", signer, account })
+          dispatch({ type: 'SET_ACCOUNT', signer, account })
         }
       })()
     }
@@ -159,10 +160,10 @@ export const useProviders = () => {
 
   // -------------------------------------------- METHODS -------------------------
   const connectToMetamask = async () => {
-    if (providerSrc === "metamask") {
+    if (providerSrc === 'metamask') {
       try {
         const account = await ethersProvider.provider.request({
-          method: "eth_requestAccounts",
+          method: 'eth_requestAccounts'
         })
         return account
       } catch (e) {
@@ -173,11 +174,11 @@ export const useProviders = () => {
 
   const switchNetwork = async (chainId, networkName) => {
     // Only Metamask support this RPC method
-    if (providerSrc === "metamask") {
+    if (providerSrc === 'metamask') {
       try {
         await ethersProvider.provider.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId }],
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }]
         })
       } catch (e) {
         console.error(e)
@@ -185,7 +186,7 @@ export const useProviders = () => {
     } else {
       // Network will be changed by reloading the page
       // And new network information will be stored in the local storage
-      window.localStorage.setItem("switched-network", networkName)
+      window.localStorage.setItem('switched-network', networkName)
       window.location.reload()
 
       // IMPORTANT
@@ -195,7 +196,7 @@ export const useProviders = () => {
 
   // connect to wallet connect
   const wcConnect = () => {
-    window.localStorage.setItem("wallet-connect", true)
+    window.localStorage.setItem('wallet-connect', true)
     window.location.reload()
   }
 
@@ -207,11 +208,11 @@ export const useProviders = () => {
         console.log(`Block n°${block} mined on ${networkName}`)
         if (account !== ethers.constants.AddressZero) {
           const balance = await ethersProvider.getBalance(account)
-          dispatch({ type: "SET_BALANCE", balance })
+          dispatch({ type: 'SET_BALANCE', balance })
         }
       }
-      ethersProvider.on("block", newBlock)
-      return () => ethersProvider.off("block", newBlock)
+      ethersProvider.on('block', newBlock)
+      return () => ethersProvider.off('block', newBlock)
     }
   }, [ethersProvider, account, networkName])
 
@@ -222,29 +223,29 @@ export const useProviders = () => {
   */
   // Network changed
   useEffect(() => {
-    if (providerType === "Web3Provider") {
+    if (providerType === 'Web3Provider') {
       const chainChanged = async (chainId) => {
         // No need to reload the page with Metamask (maybe with Wallet Connect, can we change it on the wallet?)
         console.log(`Chain changed to ${chainId}`)
-        if (providerSrc === "metamask") {
+        if (providerSrc === 'metamask') {
           const newProvider = await detectEthereumProvider()
           const web3Provider = new ethers.providers.Web3Provider(
             newProvider,
-            "any"
+            'any'
           )
-          ethersProvider.off("block")
+          ethersProvider.off('block')
           const src = web3Provider.connection.url
           dispatch({
-            type: "SET_ETHERS_PROVIDER",
-            providerType: "Web3Provider",
+            type: 'SET_ETHERS_PROVIDER',
+            providerType: 'Web3Provider',
             wrappedProvider: web3Provider,
-            providerSrc: src,
+            providerSrc: src
           })
         } else {
           // If wallet connect
-          console.log("wallet connect changed his network")
+          console.log('wallet connect changed his network')
           const walletConnectProvider = new WalletConnectProvider({
-            infuraId: "3c717cd3192b470baedb127d89581a23",
+            infuraId: '3c717cd3192b470baedb127d89581a23'
           })
           console.log(walletConnectProvider)
           const web3Provider = new ethers.providers.Web3Provider(
@@ -253,26 +254,26 @@ export const useProviders = () => {
           console.log(web3Provider)
           const src = web3Provider.connection.url
           dispatch({
-            type: "SET_ETHERS_PROVIDER",
-            providerType: "Web3Provider",
+            type: 'SET_ETHERS_PROVIDER',
+            providerType: 'Web3Provider',
             wrappedProvider: web3Provider,
-            providerSrc: src,
+            providerSrc: src
           })
         }
       }
-      ethersProvider.provider.on("chainChanged", chainChanged)
+      ethersProvider.provider.on('chainChanged', chainChanged)
       return () =>
-        ethersProvider.provider.removeListener("chainChanged", chainChanged)
+        ethersProvider.provider.removeListener('chainChanged', chainChanged)
     }
   }, [ethersProvider, providerType, providerSrc])
 
   // Account changed
   useEffect(() => {
-    if (providerType === "Web3Provider") {
+    if (providerType === 'Web3Provider') {
       const accountChanged = async (newAccount) => {
         console.log(`Account changed to ${newAccount}`)
         // Same as in [3. Get informations]
-        if (providerType === "Web3Provider") {
+        if (providerType === 'Web3Provider') {
           const signer = await ethersProvider.getSigner()
           let account
           try {
@@ -281,17 +282,17 @@ export const useProviders = () => {
 
             // Get balance of this account
             const balance = await ethersProvider.getBalance(account)
-            dispatch({ type: "SET_BALANCE", balance })
+            dispatch({ type: 'SET_BALANCE', balance })
           } catch {
             account = ethers.constants.AddressZero
           }
-          dispatch({ type: "SET_ACCOUNT", signer, account })
+          dispatch({ type: 'SET_ACCOUNT', signer, account })
         }
       }
-      ethersProvider.provider.on("accountsChanged", accountChanged)
+      ethersProvider.provider.on('accountsChanged', accountChanged)
       return () =>
         ethersProvider.provider.removeListener(
-          "accountsChanged",
+          'accountsChanged',
           accountChanged
         )
     }
@@ -299,41 +300,41 @@ export const useProviders = () => {
 
   // Connection to the provider
   useEffect(() => {
-    if (providerType === "Web3Provider") {
+    if (providerType === 'Web3Provider') {
       const connection = async ({ chainId }) => {
         console.log(`Connection to chainID: ${chainId}`)
       }
-      ethersProvider.provider.on("connect", connection)
-      return () => ethersProvider.provider.removeListener("connect", connection)
+      ethersProvider.provider.on('connect', connection)
+      return () => ethersProvider.provider.removeListener('connect', connection)
     }
   }, [ethersProvider, providerType])
 
   // Disconnection from the provider (Wallet Connect)
   useEffect(() => {
-    if (providerType === "Web3Provider") {
+    if (providerType === 'Web3Provider') {
       const disconnection = async (code, reason) => {
         console.log(code)
         console.log(reason)
         // Infinite loop with killSession
-        ethersProvider.provider.removeListener("disconnect", disconnection)
+        ethersProvider.provider.removeListener('disconnect', disconnection)
         ethersProvider.provider.connector.killSession()
 
         window.location.reload()
       }
-      ethersProvider.provider.on("disconnect", disconnection)
+      ethersProvider.provider.on('disconnect', disconnection)
       return () =>
-        ethersProvider.provider.removeListener("disconnect", disconnection)
+        ethersProvider.provider.removeListener('disconnect', disconnection)
     }
   }, [ethersProvider, providerType])
 
   // -------------------------------------------LISTEN EVENT FROM WALLET CONNECT
   useEffect(() => {
-    if (providerSrc === "eip-1193:") {
+    if (providerSrc === 'eip-1193:') {
       const update = async (error, payload) => {
         console.log(error)
         console.log(payload)
       }
-      ethersProvider.provider.connector.on("session_update", update)
+      ethersProvider.provider.connector.on('session_update', update)
     }
   }, [ethersProvider, providerSrc])
 

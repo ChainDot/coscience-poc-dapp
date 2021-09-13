@@ -1,19 +1,17 @@
-import { useContext, useEffect, useState } from "react"
-import { UsersContext } from "../contexts/UsersContext"
-import { useWeb3 } from "../web3hook/useWeb3"
-import { useIPFS } from "./useIPFS"
+import { useContext } from 'react'
+import { UsersContext } from '../contexts/UsersContext'
 
 // Pure function
 const enumStatus = (status) => {
   switch (status) {
     case 0:
-      return "Not approved"
+      return 'Not approved'
     case 1:
-      return "Pending"
+      return 'Pending'
     case 2:
-      return "Approved"
+      return 'Approved'
     default:
-      return "Unknown status"
+      return 'Unknown status'
   }
 }
 
@@ -33,7 +31,7 @@ export const getUserData = async (users, id) => {
     profileCID,
     status,
     walletList,
-    nbOfWallet,
+    nbOfWallet
   }
   return userObj
 }
@@ -41,7 +39,8 @@ export const getUserData = async (users, id) => {
 // hooks
 export const useUsersContract = () => {
   // call the context
-  const [users, mode, userData, userList] = useContext(UsersContext)
+  const [users, mode, userData, userList, owner, isOwner] =
+    useContext(UsersContext)
 
   // control call of the hook
   if (users === undefined) {
@@ -51,5 +50,5 @@ export const useUsersContract = () => {
   }
 
   // first: return contract for utilisation
-  return { users, userData, userList, getUserData }
+  return { users, userData, userList, getUserData, owner, isOwner }
 }

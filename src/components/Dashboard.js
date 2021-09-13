@@ -1,12 +1,20 @@
-import { Box, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
-import { useArticlesContract } from "../hooks/useArticlesContract"
-import { useReviewsContract } from "../hooks/useReviewsContract"
-import { useCommentsContract } from "../hooks/useCommentsContract"
-import Loading from "./Loading"
-import Accordion from "./Accordion"
+import {
+  Box,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  SlideFade
+} from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { useArticlesContract } from '../hooks/useArticlesContract'
+import { useReviewsContract } from '../hooks/useReviewsContract'
+import { useCommentsContract } from '../hooks/useCommentsContract'
+import Loading from './Loading'
+import Accordion from './Accordion'
 
-import { useIPFS } from "../hooks/useIPFS"
+import { useIPFS } from '../hooks/useIPFS'
 
 const userContractIds = async (contract, user) => {
   if (contract) {
@@ -30,8 +38,8 @@ const userContractIds = async (contract, user) => {
 
 const Dashboard = ({ user }) => {
   const { articles, createArticleList } = useArticlesContract()
-  const [reviews, , createReviewList] = useReviewsContract()
-  const [comments, , createCommentList] = useCommentsContract()
+  const { reviews, createReviewList } = useReviewsContract()
+  const { comments, createCommentList } = useCommentsContract()
   const [, readIFPS] = useIPFS()
 
   const [articleList, setArticleList] = useState()
@@ -84,73 +92,81 @@ const Dashboard = ({ user }) => {
     createCommentList,
     reviews,
     createReviewList,
-    readIFPS,
+    readIFPS
   ])
-
-  //                  Color Value
-  // const bg = useColorModeValue("white", "grayBlue.900")
-  // const txt = useColorModeValue("main", "second")
-  // const scheme = useColorModeValue("colorMain", "colorSecond")
 
   return (
     <>
-      <Tabs isFitted variant="enclosed">
-        <TabList mb="1em">
-          <Tab fontSize="2xl">
-            Articles ({articleList !== undefined ? articleList.length : "..."})
-          </Tab>
-          <Tab fontSize="2xl">
-            Reviews ({reviewList !== undefined ? reviewList.length : "..."})
-          </Tab>
-          <Tab fontSize="2xl">
-            Comments ({commentList !== undefined ? commentList.length : "..."})
-          </Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            {/* ARTICLE LIST */}
-            {articleList === undefined ? (
-              <Loading />
-            ) : (
-              articleList.map((article) => {
-                return (
-                  <Box key={article.id}>
-                    <Accordion object={article} type="Article" />
-                  </Box>
-                )
-              })
-            )}
-          </TabPanel>
-          <TabPanel>
-            {/* REVIEW LIST */}
-            {reviewList === undefined ? (
-              <Loading />
-            ) : (
-              reviewList.map((review) => {
-                return (
-                  <Box key={review.id}>
-                    <Accordion object={review} type="Review" />
-                  </Box>
-                )
-              })
-            )}
-          </TabPanel>
-          <TabPanel>
-            {/* COMMENT LIST */}
-            {commentList === undefined ? (
-              <Loading />
-            ) : (
-              commentList.map((comment) => {
-                return (
-                  <Box key={comment.id}>
-                    <Accordion object={comment} type="Comment" />
-                  </Box>
-                )
-              })
-            )}
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <SlideFade
+        threshold='0.1'
+        delay={{ enter: 0.1 }}
+        transition={{
+          enter: { duration: 0.7 }
+        }}
+        offsetY='100px'
+        offsetX='0px'
+        in
+      >
+        <Tabs isFitted variant='enclosed'>
+          <TabList mb='1em'>
+            <Tab fontSize='2xl'>
+              Articles ({articleList !== undefined ? articleList.length : '...'}
+              )
+            </Tab>
+            <Tab fontSize='2xl'>
+              Reviews ({reviewList !== undefined ? reviewList.length : '...'})
+            </Tab>
+            <Tab fontSize='2xl'>
+              Comments ({commentList !== undefined ? commentList.length : '...'}
+              )
+            </Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              {/* ARTICLE LIST */}
+              {articleList === undefined ? (
+                <Loading />
+              ) : (
+                articleList.map((article) => {
+                  return (
+                    <Box key={article.id}>
+                      <Accordion object={article} type='Article' />
+                    </Box>
+                  )
+                })
+              )}
+            </TabPanel>
+            <TabPanel>
+              {/* REVIEW LIST */}
+              {reviewList === undefined ? (
+                <Loading />
+              ) : (
+                reviewList.map((review) => {
+                  return (
+                    <Box key={review.id}>
+                      <Accordion object={review} type='Review' />
+                    </Box>
+                  )
+                })
+              )}
+            </TabPanel>
+            <TabPanel>
+              {/* COMMENT LIST */}
+              {commentList === undefined ? (
+                <Loading />
+              ) : (
+                commentList.map((comment) => {
+                  return (
+                    <Box key={comment.id}>
+                      <Accordion object={comment} type='Comment' />
+                    </Box>
+                  )
+                })
+              )}
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </SlideFade>
     </>
   )
 }

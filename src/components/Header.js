@@ -11,7 +11,7 @@ import {
   CloseButton,
   Heading,
   Text,
-  Link,
+  Link
 } from "@chakra-ui/react"
 import { HamburgerIcon, MoonIcon, SunIcon, BellIcon } from "@chakra-ui/icons"
 
@@ -24,8 +24,7 @@ import HeaderLinks from "./HeaderLinks"
 const Header = () => {
   //login for the sign up to add.<Badge colorScheme="purple">New</Badge>
   const { userData, userList } = useUsersContract()
-  const bg = useColorModeValue("white", "grayBlue.900")
-  const co = useColorModeValue("main", "second")
+
   const mobileNav = useDisclosure()
 
   // useState
@@ -43,7 +42,11 @@ const Header = () => {
     })
   }, [userList])
 
-  const scheme = useColorModeValue("colorMain", "colorSecond")
+  //    Color Value
+
+  const bg = useColorModeValue("white", "grayBlue.900")
+  const co = useColorModeValue("main", "second")
+  const button = useColorModeValue("colorMain", "colorSecond")
 
   return (
     <>
@@ -138,7 +141,7 @@ const Header = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   variant="outline"
-                  colorScheme={scheme}
+                  color={button}
                   aria-label="Bell notification"
                   icon={<BellIcon />}
                   as={RouterLink}

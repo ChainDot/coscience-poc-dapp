@@ -8,7 +8,7 @@ import {
   Grid,
   SlideFade,
   useColorModeValue,
-  Divider,
+  Divider
 } from "@chakra-ui/react"
 import { Link as RouterLink } from "react-router-dom"
 
@@ -17,6 +17,8 @@ const ArticleList = ({ articleList }) => {
   const hover = useColorModeValue("main", "second")
   const txt = useColorModeValue("grayOrange.800", "grayBlue.200")
   const bgUser = useColorModeValue("white", "grayBlue.900")
+  const bgError = useColorModeValue("grayOrange.200", "grayBlue.800")
+  const txtError = useColorModeValue("grayOrange.600", "grayBlue.400")
   const bg = useColorModeValue("grayOrange.100", "grayBlue.800")
 
   return (
@@ -24,7 +26,7 @@ const ArticleList = ({ articleList }) => {
       threshold="0.1"
       delay={{ enter: 0.1 }}
       transition={{
-        enter: { duration: 0.7 },
+        enter: { duration: 0.7 }
       }}
       offsetY="100px"
       offsetX="0px"
@@ -35,7 +37,7 @@ const ArticleList = ({ articleList }) => {
           sm: "repeat(1, 1fr)",
           md: "repeat(2, 1fr)",
           lg: "repeat(3, 1fr)",
-          xl: "repeat(4, 1fr)",
+          xl: "repeat(4, 1fr)"
         }}
         gap="3"
         bg={bg}
@@ -50,7 +52,7 @@ const ArticleList = ({ articleList }) => {
               p="5"
               _hover={{ border: "2px", borderColor: hover }}
               transition="0.3s"
-              bg={bgUser}
+              bg={article.title ? bgUser : bgError}
               border="2px"
               borderColor={border}
             >
@@ -81,14 +83,22 @@ const ArticleList = ({ articleList }) => {
                 to={`/article/${article.id}`}
                 isTruncated
                 maxW="20ch"
-                color={txt}
+                color={article.title ? txt : txtError}
                 textAlign="center"
               >
-                {article.title}
+                {article.title ? article.title : "Data not found..."}
               </Heading>
               <Divider border="1px" />
-              <Text isTruncated maxW="30ch" py="6">
-                Abstract: {article.abstract}
+              <Text
+                isTruncated
+                maxW="30ch"
+                py="6"
+                color={article.abstract ? txt : txtError}
+              >
+                Abstract:{" "}
+                {article.abstract
+                  ? article.abstract
+                  : "IPFS can take sometime to display data"}
               </Text>
 
               <Flex mb="4" alignItems="center">
@@ -110,6 +120,10 @@ const ArticleList = ({ articleList }) => {
                 >
                   {article.firstName} {article.lastName}
                 </Link>
+              </Flex>
+              <Flex justifyContent="space-between">
+                <Text>Validity: {article.validityVotes}</Text>
+                <Text>Importance: {article.importanceVotes}</Text>
               </Flex>
               <Flex justifyContent="space-between">
                 <Text>Reviews({article.reviews.length})</Text>

@@ -12,15 +12,19 @@ const UsersContextProvider = ({ children }) => {
 
   // utils
   const { state } = useWeb3()
+  const { account } = state
+
   const [, readIPFS] = useIPFS()
   const [userData, setUserData] = useState({})
   const [userList, setUserList] = useState([])
+
+  const [owner, setOwner] = useState("")
+  const [isOwner, setIsOwner] = useState(false)
 
   // get user data
   useEffect(() => {
     const connectedUser = async () => {
       if (contract && state.networkName === "rinkeby") {
-        // const id = await contractCall(contract, "profileID", [state.account])
         const id = await contract.profileID(state.account)
         const userObj = await getUserData(contract, id.toNumber())
         const { firstName, lastName } = await readIPFS(userObj.nameCID)
@@ -28,9 +32,11 @@ const UsersContextProvider = ({ children }) => {
       }
     }
     connectedUser()
+    contract?.on("Registered", connectedUser)
 
     return () => {
       setUserData({})
+      contract?.off("Registered", connectedUser)
     }
   }, [state.account, contract, readIPFS, state.networkName])
 
@@ -50,15 +56,39 @@ const UsersContextProvider = ({ children }) => {
       }
     }
     createList()
+    contract?.on("Approved", createList)
+    contract?.on("Registered", createList)
 
     // clean up to set value if component is unmount
     return () => {
       setUserList([])
+      contract?.off("Approved", createList)
+      contract?.off("Registered", createList)
     }
   }, [contract, readIPFS, state.networkName])
 
+  // get owner
+  useEffect(() => {
+    if (contract) {
+      const getOwner = async () => {
+        try {
+          const owner = await contract.owner()
+          if (owner.toLowerCase() === account.toLowerCase()) {
+            setIsOwner(true)
+          }
+          setOwner(owner)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      getOwner()
+    }
+  }, [contract, account])
+
   return (
-    <UsersContext.Provider value={[contract, mode, userData, userList]}>
+    <UsersContext.Provider
+      value={[contract, mode, userData, userList, owner, isOwner]}
+    >
       {children}
     </UsersContext.Provider>
   )

@@ -9,34 +9,34 @@ import {
   AccordionPanel,
   Button,
   Flex,
-  useColorModeValue,
-} from "@chakra-ui/react"
-import { Link } from "react-router-dom"
-import { useArticlesContract } from "../hooks/useArticlesContract"
-import { useReviewsContract } from "../hooks/useReviewsContract"
-import { useEffect, useState } from "react"
-import { useCommentsContract } from "../hooks/useCommentsContract"
+  useColorModeValue
+} from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
+import { useArticlesContract } from '../hooks/useArticlesContract'
+import { useReviewsContract } from '../hooks/useReviewsContract'
+import { useEffect, useState } from 'react'
+import { useCommentsContract } from '../hooks/useCommentsContract'
 
 const Accordion = ({ object, type }) => {
-  const [reviews] = useReviewsContract()
+  const { reviews } = useReviewsContract()
   const { articles } = useArticlesContract()
-  const [comments] = useCommentsContract()
+  const { comments } = useCommentsContract()
 
   const [articleID, setArticleID] = useState()
 
   //                  Color Value
-  const scheme = useColorModeValue("colorMain", "colorSecond")
+  const scheme = useColorModeValue('colorMain', 'colorSecond')
 
   useEffect(() => {
     ;(async () => {
       switch (type) {
-        case "Article":
+        case 'Article':
           setArticleID(object.id)
           break
-        case "Review":
+        case 'Review':
           setArticleID(object.targetID)
           break
-        case "Comment":
+        case 'Comment':
           // comment
           // CRAWLER ------------------------------------
           let on = object
@@ -46,7 +46,7 @@ const Accordion = ({ object, type }) => {
           }
           if (on.target === articles.address) {
             let number
-            if (typeof on.id !== "number") {
+            if (typeof on.id !== 'number') {
               number = on.id.toNumber()
             } else {
               number = on.id
@@ -54,7 +54,7 @@ const Accordion = ({ object, type }) => {
             setArticleID(number)
           } else if (on.target === reviews.address) {
             let number
-            if (typeof on.id !== "number") {
+            if (typeof on.id !== 'number') {
               number = on.id.toNumber()
             } else {
               number = on.id
@@ -73,15 +73,15 @@ const Accordion = ({ object, type }) => {
     articles.address,
     reviews.address,
     comments,
-    object,
+    object
   ])
 
   return (
     <ChakraAccordion allowToggle>
       <AccordionItem>
         <AccordionButton>
-          <Box flex="1" textAlign="left">
-            {type} n°{object.id} : {type === "Comment" ? "" : object.title}
+          <Box flex='1' textAlign='left'>
+            {type} n°{object.id} : {type === 'Comment' ? '' : object.title}
           </Box>
           <AccordionIcon />
         </AccordionButton>
@@ -89,13 +89,13 @@ const Accordion = ({ object, type }) => {
         <AccordionPanel pb={4}>
           <Box>
             <Heading>
-              {type === "Comment" ? `Comment n°${object.id}` : object.title}
+              {type === 'Comment' ? `Comment n°${object.id}` : object.title}
             </Heading>
-            {type === "Article" ? (
+            {type === 'Article' ? (
               <>
                 {object.coAuthor.length ? (
                   <>
-                    <Text>Co-authors: </Text>{" "}
+                    <Text>Co-authors: </Text>{' '}
                     {object.coAuthor.map((author, index) => {
                       return (
                         <Text key={author}>{`${index + 1}: ${author}`}</Text>
@@ -103,15 +103,15 @@ const Accordion = ({ object, type }) => {
                     })}
                   </>
                 ) : (
-                  "There is no co-author"
+                  'There is no co-author'
                 )}
-                <Text mt="6" textAlign="center" fontSize="md">
+                <Text mt='6' textAlign='center' fontSize='md'>
                   Abstract
                 </Text>
-                <Text mb="6" textAlign="center">
+                <Text mb='6' textAlign='center'>
                   {object.abstract}
                 </Text>
-                <Flex alignItems="center" justifyContent="space-between">
+                <Flex alignItems='center' justifyContent='space-between'>
                   <Button
                     as={Link}
                     to={`/article/${object.id}`}
@@ -120,18 +120,18 @@ const Accordion = ({ object, type }) => {
                     Read the article
                   </Button>
                   <Box>
-                    <Text textAlign="end" fontSize="md">
-                      Nb of reviews: {object.reviews.length}{" "}
+                    <Text textAlign='end' fontSize='md'>
+                      Nb of reviews: {object.reviews.length}{' '}
                     </Text>
-                    <Text textAlign="end" fontSize="md">
-                      Nb of comments: {object.comments.length}{" "}
+                    <Text textAlign='end' fontSize='md'>
+                      Nb of comments: {object.comments.length}{' '}
                     </Text>
                   </Box>
                 </Flex>
               </>
-            ) : type === "Review" ? (
+            ) : type === 'Review' ? (
               <>
-                <Text mt="6" fontSize="md">
+                <Text mt='6' fontSize='md'>
                   Content
                 </Text>
                 <Text>{object.content}</Text>
@@ -145,7 +145,7 @@ const Accordion = ({ object, type }) => {
               </>
             ) : (
               <>
-                <Text mt="6" fontSize="md">
+                <Text mt='6' fontSize='md'>
                   Content
                 </Text>
                 <Text>{object.content}</Text>
@@ -154,7 +154,7 @@ const Accordion = ({ object, type }) => {
                   colorScheme={scheme}
                   as={Link}
                 >
-                  {" "}
+                  {' '}
                   On article n°{articleID}
                 </Button>
               </>

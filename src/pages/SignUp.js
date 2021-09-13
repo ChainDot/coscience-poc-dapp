@@ -4,7 +4,7 @@ import {
   Button,
   Text,
   useColorModeValue,
-  Heading,
+  Heading
 } from "@chakra-ui/react"
 import { Link } from "react-router-dom"
 import { useUsersContract } from "../hooks/useUsersContract"
@@ -14,7 +14,7 @@ import { useWeb3 } from "../web3hook/useWeb3"
 
 const SignUp = () => {
   const { state, connectToMetamask } = useWeb3()
-  const { user } = useUsersContract()
+  const { userData } = useUsersContract()
 
   //color Mode
   const bg = useColorModeValue("white", "gray.800")
@@ -26,8 +26,8 @@ const SignUp = () => {
         <Container maxW="container.lg">
           <Box shadow="lg" borderRadius="50" py="10" bg={bg}>
             {state.isLogged ? (
-              user ? (
-                user.id !== 0 ? (
+              userData ? (
+                userData.id !== 0 ? (
                   <Box>
                     <Text mb="6" textAlign="center" fontSize="3xl">
                       Your account is successfully created.
@@ -38,8 +38,8 @@ const SignUp = () => {
                       mx="auto"
                       colorScheme={scheme}
                       as={Link}
-                      to={`/profile/${user.id}`}
-                      disabled={user.id === undefined}
+                      to={`/profile/${userData.id}`}
+                      disabled={userData.id === undefined}
                     >
                       Go to your profile
                     </Button>

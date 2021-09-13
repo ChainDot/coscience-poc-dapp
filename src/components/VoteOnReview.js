@@ -1,41 +1,40 @@
-import { Box, Flex, IconButton, Text } from "@chakra-ui/react"
+import { Flex, Text, IconButton, Box } from "@chakra-ui/react"
 import React from "react"
-import { FaThumbsDown, FaThumbsUp } from "react-icons/fa"
+import { FaThumbsUp, FaThumbsDown } from "react-icons/fa"
+
 import { useReviewsContract } from "../hooks/useReviewsContract"
 import { useCall } from "../web3hook/useCall"
 
 const VoteOnReview = ({ id, review }) => {
-  const [reviews] = useReviewsContract()
-
+  const { reviews } = useReviewsContract()
   const [status, contractCall] = useCall()
 
-  async function VoteOnReview(vote) {
-    await contractCall(reviews, "vote", [vote, id])
+  async function VoteOn(choice) {
+    await contractCall(reviews, "vote", [choice, id])
   }
 
-  console.log(review.nbVotes)
-  console.log(id)
-
+  console.log("review", review)
   return (
-    <Flex alignItems="center" my="5" justifyContent="start">
-      <Text me="2">Review #{review.id}</Text>
-      <Box textAlign="center" me="2">
+    <Flex my="5" alignItems="center">
+      {/* <Text>Review </Text> */}
+      <Box>
         <IconButton
           colorScheme="green"
-          borderRadius="10px"
-          me="1"
           aria-label="thumb ub"
           icon={<FaThumbsUp />}
-          onClick={() => VoteOnReview(1)}
+          onClick={() => VoteOn(1)}
           isLoading={
             status.startsWith("Waiting") || status.startsWith("Pending")
           }
           disabled={
             status.startsWith("Waiting") || status.startsWith("Pending")
           }
+          me="1"
+          borderRadius="full"
         />
 
         <IconButton
+          colorScheme="red"
           aria-label="thumb down"
           icon={<FaThumbsDown />}
           isLoading={
@@ -44,13 +43,14 @@ const VoteOnReview = ({ id, review }) => {
           disabled={
             status.startsWith("Waiting") || status.startsWith("Pending")
           }
-          onClick={() => VoteOnReview("0")}
-          colorScheme="red"
-          borderRadius="10px"
+          onClick={() => VoteOn(0)}
+          borderRadius="full"
+          me="5"
         />
       </Box>
-
-      <Text>Vote: {review.nbVotes}</Text>
+      <Text>
+        {review.vote - review.vote} / {review.nbVotes}
+      </Text>
     </Flex>
   )
 }

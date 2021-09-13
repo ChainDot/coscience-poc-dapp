@@ -6,11 +6,11 @@ import {
   Link,
   Skeleton,
   Text,
-  useColorModeValue,
+  useColorModeValue
 } from "@chakra-ui/react"
-import ArticleImportance from "./Articlemportance"
 
 import ArticleValidity from "./ArticleValidity"
+import ArticleImportance from "./ArticleImportance"
 
 const ArticleHeader = ({ id, article, eventList }) => {
   const bg = useColorModeValue("grayOrange.100", "grayBlue.700")

@@ -7,60 +7,60 @@ import {
   useDisclosure,
   Collapse,
   Heading,
-  useColorModeValue,
-} from "@chakra-ui/react"
-import { useState } from "react"
-import { useCommentsContract } from "../hooks/useCommentsContract"
-import { useIPFS } from "../hooks/useIPFS"
-import { useCall } from "../web3hook/useCall"
+  useColorModeValue
+} from '@chakra-ui/react'
+import { useState } from 'react'
+import { useCommentsContract } from '../hooks/useCommentsContract'
+import { useIPFS } from '../hooks/useIPFS'
+import { useCall } from '../web3hook/useCall'
 
 const SendComment = ({ targetAddress, id }) => {
-  const [comments] = useCommentsContract()
+  const { comments } = useCommentsContract()
   const [status, contractCall] = useCall()
   const [pinJsObject, , ipfsStatus, , unPin] = useIPFS()
   const { isOpen, onToggle } = useDisclosure()
 
-  const [content, setContent] = useState("")
+  const [content, setContent] = useState('')
 
   async function post() {
     const contentHash = await pinJsObject({ version: 0.1, content })
     // post(comment,articleAddress, articleID)
-    const tx = await contractCall(comments, "post", [
+    const tx = await contractCall(comments, 'post', [
       contentHash,
       targetAddress,
-      id,
+      id
     ])
 
     // unpin
-    if (tx === "Error") {
+    if (tx === 'Error') {
       await unPin(contentHash)
     }
-    setContent("")
+    setContent('')
   }
-  const scheme = useColorModeValue("colorMain", "colorSecond")
+  const scheme = useColorModeValue('colorMain', 'colorSecond')
 
   return (
     <>
-      <Box minW="49%">
+      <Box minW='49%'>
         <Button
-          display="flex"
-          ms={{ base: "", lg: "auto" }}
+          display='flex'
+          ms={{ base: '', lg: 'auto' }}
           onClick={onToggle}
           colorScheme={scheme}
         >
-          {isOpen ? "X" : "Add comment"}
+          {isOpen ? 'X' : 'Add comment'}
         </Button>
 
-        <Box mx="auto" display="flex" flexDirection="column">
+        <Box mx='auto' display='flex' flexDirection='column'>
           <Collapse in={isOpen} animateOpacity>
-            <Box p="40px" mt="4" rounded="md" shadow="md">
-              <FormControl mb="4">
+            <Box p='40px' mt='4' rounded='md' shadow='md'>
+              <FormControl mb='4'>
                 <FormLabel>
                   <Heading>Write a comment</Heading>
                 </FormLabel>
                 <Textarea
                   value={content}
-                  placeholder="Your comment..."
+                  placeholder='Your comment...'
                   onChange={(e) => setContent(e.target.value)}
                 />
               </FormControl>
@@ -68,18 +68,18 @@ const SendComment = ({ targetAddress, id }) => {
                 colorScheme={scheme}
                 onClick={post}
                 isLoading={
-                  status.startsWith("Waiting") ||
-                  status.startsWith("Pending") ||
-                  ipfsStatus.startsWith("Pinning")
+                  status.startsWith('Waiting') ||
+                  status.startsWith('Pending') ||
+                  ipfsStatus.startsWith('Pinning')
                 }
                 loadingText={
-                  ipfsStatus.startsWith("Pinning") ? ipfsStatus : status
+                  ipfsStatus.startsWith('Pinning') ? ipfsStatus : status
                 }
                 disabled={
                   !content.length ||
-                  status.startsWith("Waiting") ||
-                  status.startsWith("Pending") ||
-                  ipfsStatus.startsWith("Pinning")
+                  status.startsWith('Waiting') ||
+                  status.startsWith('Pending') ||
+                  ipfsStatus.startsWith('Pinning')
                 }
               >
                 Submit

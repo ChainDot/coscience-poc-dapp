@@ -21,8 +21,8 @@ export const useIPFS = () => {
       setStatus("Pinning to IPFS")
       result = await pinata.pinJSONToIPFS(obj, {
         pinataOptions: {
-          cidVersion: 1,
-        },
+          cidVersion: 1
+        }
       })
     } catch (e) {
       setStatus("Failed to pin")
@@ -35,7 +35,7 @@ export const useIPFS = () => {
         ),
         status: "error",
         duration: 7000,
-        isClosable: true,
+        isClosable: true
       })
       throw e
     }
@@ -54,7 +54,7 @@ export const useIPFS = () => {
       ),
       status: "info",
       duration: 12000,
-      isClosable: true,
+      isClosable: true
     })
 
     // return directly the CID of the content
@@ -81,8 +81,8 @@ export const useIPFS = () => {
           headers: {
             "Content-Type": `multipart/form-data; boundary=${formatData._boundary}`,
             pinata_api_key: process.env.REACT_APP_PINATA_KEY,
-            pinata_secret_api_key: process.env.REACT_APP_PINATA_SECRET_KEY,
-          },
+            pinata_secret_api_key: process.env.REACT_APP_PINATA_SECRET_KEY
+          }
         }
       )
     } catch (e) {
@@ -97,7 +97,7 @@ export const useIPFS = () => {
         ),
         status: "error",
         duration: 7000,
-        isClosable: true,
+        isClosable: true
       })
       throw e
     }
@@ -120,7 +120,7 @@ export const useIPFS = () => {
       ),
       status: "info",
       duration: 12000,
-      isClosable: true,
+      isClosable: true
     })
 
     return response.data.IpfsHash
@@ -143,7 +143,7 @@ export const useIPFS = () => {
         ),
         status: "warning",
         duration: 12000,
-        isClosable: true,
+        isClosable: true
       })
     } catch (e) {
       setStatus("Unpin failed")
@@ -157,7 +157,7 @@ export const useIPFS = () => {
         ),
         status: "error",
         duration: 12000,
-        isClosable: true,
+        isClosable: true
       })
     }
   }
@@ -176,15 +176,15 @@ export const useIPFS = () => {
       response = await axios({
         method: "get",
         url: `https://ipfs.io/ipfs/${cid}`, // cid : part of the function that change in each call
-        timeout: 5000,
+        timeout: 5000
       })
     } catch (e) {
       // manage IPFS error
       response = {
-        data: "IPFS: too much time to get a response",
+        data: "IPFS: too much time to get a response"
       }
       // add all keys??
-      console.error(e)
+      console.error(e.code)
     }
     return response.data
   }, [])

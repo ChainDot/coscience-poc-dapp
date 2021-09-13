@@ -19,7 +19,7 @@ import {
   TabList,
   Tab,
   TabPanels,
-  TabPanel,
+  TabPanel
 } from "@chakra-ui/react"
 import { useState, useEffect, useRef } from "react"
 import { useParams, Link as RouterLink } from "react-router-dom"
@@ -34,11 +34,19 @@ import ReviewList from "../components/ReviewList"
 import CommentList from "../components/CommentList"
 import SendReview from "../components/SendReview"
 import SendComment from "../components/SendComment"
+import { useCall } from "../web3hook/useCall"
+import { useGovernanceContract } from "../hooks/useGovernanceContract"
+import { useReviewsContract } from "../hooks/useReviewsContract"
+import { useCommentsContract } from "../hooks/useCommentsContract"
 
 const Article = () => {
   const { id } = useParams()
   const { articles, getArticleData, articleEvents } = useArticlesContract()
-  const { users } = useUsersContract()
+  const { reviews } = useReviewsContract()
+  const { comments } = useCommentsContract()
+  const { governance } = useGovernanceContract()
+  const { users, owner, isOwner } = useUsersContract()
+  const [status, contractCall] = useCall()
 
   const [, readIPFS] = useIPFS()
 
@@ -114,12 +122,34 @@ const Article = () => {
           validity,
           importance,
           validityVotes,
-          importanceVotes,
+          importanceVotes
         })
+
+        // listen the event with the filter
+        articles.on(nbOfValidityVote, articleData)
+        articles.on(nbOfImportanceVote, articleData)
+        reviews?.on("Posted", articleData)
+        comments?.on("Posted", articleData)
+        return () => {
+          articles.off(nbOfValidityVote, articleData)
+          articles.off(nbOfImportanceVote, articleData)
+          reviews?.off("Posted", articleData)
+          comments?.off("Posted", articleData)
+        }
       }
       articleData()
+      // CLEAN UP !!
     }
-  }, [articles, getArticleData, id, readIPFS, users])
+  }, [articles, getArticleData, id, readIPFS, users, reviews, comments])
+
+  // ban
+  async function banArticle(id) {
+    await contractCall(articles, "banArticle", [id])
+  }
+
+  async function voteToBanArticle(id) {
+    await contractCall(governance, "voteToBanArticle", [id])
+  }
 
   //                  Color Value
   const bg = useColorModeValue("white", "grayOrange.900")
@@ -141,7 +171,12 @@ const Article = () => {
             article.id !== 0 ? (
               <>
                 <Box key={article.id}>
-                  <Heading fontFamily="title" fontSize="8xl" textAlign="center">
+                  <Heading
+                    fontFamily="title"
+                    fontSize="6xl"
+                    textAlign="center"
+                    p="5"
+                  >
                     {article.title}
                   </Heading>
 
@@ -178,7 +213,7 @@ const Article = () => {
                       </Text>
                     )
                   })}
-                  {article.pdfFile !== undefined ? (
+                  {article.pdfFile !== "No PDF joined" ? (
                     <Button
                       as={Link}
                       isExternal
@@ -269,6 +304,40 @@ const Article = () => {
           ) : (
             <Loading />
           )}
+          <Box>
+            {/*Owner Options */}
+            {owner !== governance?.address ? (
+              isOwner ? (
+                <Button
+                  onClick={() => banArticle(id)}
+                  isLoading={
+                    status.startsWith("Waiting") || status.startsWith("Pending")
+                  }
+                  loadingText={status}
+                  disabled={
+                    status.startsWith("Waiting") || status.startsWith("Pending")
+                  }
+                >
+                  Ban
+                </Button>
+              ) : (
+                ""
+              )
+            ) : (
+              <Button
+                onClick={() => voteToBanArticle(id)}
+                isLoading={
+                  status.startsWith("Waiting") || status.startsWith("Pending")
+                }
+                loadingText={status}
+                disabled={
+                  status.startsWith("Waiting") || status.startsWith("Pending")
+                }
+              >
+                Vote for ban
+              </Button>
+            )}
+          </Box>
         </Container>
       </Box>
 
