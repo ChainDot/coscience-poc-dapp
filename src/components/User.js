@@ -1,11 +1,7 @@
 import { Button } from "@chakra-ui/button"
 import { useColorModeValue } from "@chakra-ui/color-mode"
 import { Flex, LinkBox, LinkOverlay, Spacer, Text } from "@chakra-ui/layout"
-import {
-  CircularProgress,
-  CircularProgressLabel,
-  Progress
-} from "@chakra-ui/progress"
+import { CircularProgress, CircularProgressLabel } from "@chakra-ui/progress"
 import { Tag } from "@chakra-ui/tag"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
@@ -23,6 +19,7 @@ const User = ({ user }) => {
   //                  Color Value
   const bgUser = useColorModeValue("grayOrange.100", "grayBlue.800")
   const txt = useColorModeValue("mainLight", "second")
+  const scheme = useColorModeValue("colorMain", "colorSecond")
 
   useEffect(() => {
     // get events on this user
@@ -120,6 +117,7 @@ const User = ({ user }) => {
               status.startsWith("Waiting") ||
               status.startsWith("Pending")
             }
+            colorScheme={txt}
           >
             Ban
           </Button>
@@ -135,6 +133,7 @@ const User = ({ user }) => {
               status.startsWith("Waiting") ||
               status.startsWith("Pending")
             }
+            colorScheme={txt}
           >
             Accept
           </Button>
@@ -149,7 +148,7 @@ const User = ({ user }) => {
             ""
           )}
           <Button
-            colorScheme="colorMain"
+            colorScheme={scheme}
             onClick={() => voteToBanUser(user.id)}
             isLoading={
               status.startsWith("Waiting") || status.startsWith("Pending")
@@ -180,7 +179,7 @@ const User = ({ user }) => {
               ""
             )}
             <Button
-              colorScheme="colorMain"
+              colorScheme={scheme}
               onClick={() => voteToAcceptUser(user.id)}
               isLoading={
                 status.startsWith("Waiting") || status.startsWith("Pending")

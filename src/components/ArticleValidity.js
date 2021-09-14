@@ -46,7 +46,8 @@ const ArticleValidity = ({ id, article }) => {
         />
       </Box>
       <Text>
-        {article.validityVotes - article.validity} / {article.validityVotes}
+        {(article.validity + article.validityVotes) / 2} /{" "}
+        {article.validityVotes}
       </Text>
     </Flex>
   )

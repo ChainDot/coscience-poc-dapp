@@ -32,20 +32,21 @@ import {
   useClipboard,
   Badge,
   useColorModeValue,
-  SlideFade
-} from '@chakra-ui/react'
-import { useState } from 'react'
+  SlideFade,
+  Tag
+} from "@chakra-ui/react"
+import { useState } from "react"
 import {
   EmailIcon,
   ChatIcon,
   InfoIcon,
   LinkIcon,
   SettingsIcon
-} from '@chakra-ui/icons'
-import { useUsersContract } from '../hooks/useUsersContract'
-import UserSetting from './UserSetting'
-import mailgo from 'mailgo'
-import React, { useEffect } from 'react'
+} from "@chakra-ui/icons"
+import { useUsersContract } from "../hooks/useUsersContract"
+import UserSetting from "./UserSetting"
+import mailgo from "mailgo"
+import React, { useEffect } from "react"
 
 const DashSide = ({ user }) => {
   const { userData } = useUsersContract()
@@ -63,94 +64,94 @@ const DashSide = ({ user }) => {
 
   //                     colorValue
 
-  const button = useColorModeValue('colorMain', 'colorSecond')
-  const link = useColorModeValue('main', 'second')
-  const bg = useColorModeValue('grayOrange.200', 'grayBlue.700')
+  const button = useColorModeValue("colorMain", "colorSecond")
+  const link = useColorModeValue("main", "second")
+  const bg = useColorModeValue("grayOrange.200", "grayBlue.700")
 
   return (
     <>
-      <Box p='10' w={{ base: 'full', lg: '25vw' }} bg={bg}>
+      <Box p="10" w={{ base: "full", lg: "25vw" }} bg={bg}>
         <SlideFade
-          threshold='0.1'
+          threshold="0.1"
           delay={{ enter: 0.1 }}
           transition={{
             enter: { duration: 0.7 }
           }}
-          offsetY='0px'
-          offsetX='-100px'
+          offsetY="0px"
+          offsetX="-100px"
           in
         >
-          <Flex flexDirection='column'>
-            <Flex justifyContent='space-between' mb='4'>
+          <Flex flexDirection="column">
+            <Flex justifyContent="space-between" mb="4">
               <Avatar
-                me='4'
-                size='2xl'
-                name='Segun Adebayo'
-                src='https://bit.ly/sage-adebayo'
-              />{' '}
-              <Flex justifyContent='space-between' flexDirection='column'>
+                me="4"
+                size="2xl"
+                name="Segun Adebayo"
+                src="https://bit.ly/sage-adebayo"
+              />{" "}
+              <Flex justifyContent="space-between" flexDirection="column">
                 <Badge
-                  borderRadius='5'
-                  shadow='lg'
-                  p='2'
+                  borderRadius="full"
+                  shadow="lg"
+                  p="3"
                   bg={
-                    user.status === 'Pending'
-                      ? 'orange.500'
-                      : user.status === 'Approved'
-                      ? 'green.400'
-                      : 'red.400'
+                    user.status === "Pending"
+                      ? "orange.500"
+                      : user.status === "Approved"
+                      ? "green.400"
+                      : "red.400"
                   }
                 >
                   {user.status}
                 </Badge>
 
-                <Badge
-                  shadow='lg'
-                  p='2'
-                  borderRadius='5'
-                  color='black'
-                  colorScheme='colorSecond'
+                <Tag
+                  shadow="lg"
+                  borderRadius="full"
+                  colorScheme={button}
+                  p="3"
+                  fontWeight="bold"
                 >
-                  ID {user.id}
-                </Badge>
+                  ID #{user.id}
+                </Tag>
               </Flex>
             </Flex>
-            <Flex alignItems='center' justifyContent='space-between'>
-              <Heading my='4' as='h2'>
-                {user.firstName} {user.lastName}{' '}
+            <Flex alignItems="center" justifyContent="space-between">
+              <Heading my="4" as="h2">
+                {user.firstName} {user.lastName}{" "}
               </Heading>
 
-              <Popover placement='top-start'>
+              <Popover placement="top-start">
                 <PopoverTrigger>
-                  <IconButton variant='Link' color={link} icon={<InfoIcon />} />
+                  <IconButton variant="Link" color={link} icon={<InfoIcon />} />
                 </PopoverTrigger>
-                <PopoverContent w='100%' textAlign='start' p='2'>
-                  <PopoverHeader fontWeight='semibold'>
+                <PopoverContent w="100%" textAlign="start" p="2">
+                  <PopoverHeader fontWeight="semibold">
                     IPFS Informations
                   </PopoverHeader>
                   <PopoverArrow />
                   <PopoverCloseButton />
                   <PopoverBody>
                     <Text>
-                      Profile:{' '}
+                      Profile:{" "}
                       <Link
                         color={link}
                         isExternal
                         href={`https://ipfs.io/ipfs/${user.profileCID}`}
                       >
                         ipfs.io
-                      </Link>{' '}
+                      </Link>{" "}
                       (gateway)
                     </Text>
                     <Text>
-                      Name:{' '}
+                      Name:{" "}
                       <Link
                         color={link}
                         isExternal
                         href={`https://ipfs.io/ipfs/${user.nameCID}`}
                       >
                         ipfs.io
-                      </Link>{' '}
+                      </Link>{" "}
                       (gateway)
                     </Text>
                   </PopoverBody>
@@ -160,18 +161,18 @@ const DashSide = ({ user }) => {
               {Number(user.id) === userData.id ? (
                 <IconButton
                   colorScheme={button}
-                  aria-label='Call Segun'
-                  size='lg'
+                  aria-label="Call Segun"
+                  size="lg"
                   icon={<SettingsIcon />}
                   onClick={setIsOpenSetting}
-                  borderRadius='100'
+                  borderRadius="100"
                 />
               ) : (
-                ''
+                ""
               )}
             </Flex>
             {/* SETTINGS MODAL */}
-            <Modal size='lg' isOpen={isOpenSetting} onClose={onCloseSetting}>
+            <Modal size="lg" isOpen={isOpenSetting} onClose={onCloseSetting}>
               <ModalOverlay />
               <ModalContent>
                 <ModalHeader>Settings</ModalHeader>
@@ -184,26 +185,26 @@ const DashSide = ({ user }) => {
 
             {/* USER PROFILE */}
 
-            <Flex my='4' alignItems='center'>
-              <EmailIcon me='4' />
+            <Flex my="4" alignItems="center">
+              <EmailIcon me="4" />
               <Link href={`mailto:${user.email}`}>
                 {user.email}
-                <LinkIcon mx='2px' />
+                <LinkIcon mx="2px" />
               </Link>
             </Flex>
-            <Text my='2'>Laboratory: {user.laboratory}</Text>
+            <Text my="2">Laboratory: {user.laboratory}</Text>
 
-            <Text my='4' fontWeight='bold'>
+            <Text my="4" fontWeight="bold">
               <ChatIcon /> Bio:
             </Text>
 
-            <Box borderRadius='5' bg={bg} w='100%' p={4}>
+            <Box borderRadius="5" bg={bg} w="100%" p={4}>
               <Text>{user.bio}</Text>
             </Box>
 
             <Button
-              my='6'
-              rounded={'full'}
+              my="6"
+              rounded={"full"}
               px={6}
               colorScheme={button}
               onClick={setIsOpen}
@@ -217,28 +218,28 @@ const DashSide = ({ user }) => {
                 <AlertDialogHeader>Here your Wallet List</AlertDialogHeader>
                 <AlertDialogCloseButton />
                 <AlertDialogBody>
-                  <UnorderedList listStyleType='none'>
+                  <UnorderedList listStyleType="none">
                     {user.walletList !== undefined
                       ? user.walletList.map((wallet) => {
                           return (
-                            <Flex key={wallet} as='li' mb={2}>
+                            <Flex key={wallet} as="li" mb={2}>
                               <Input
                                 onClick={(e) => setValue(e.target.value)}
                                 value={wallet}
                                 isReadOnly
-                                placeholder='test'
+                                placeholder="test"
                               />
                               <Button
                                 disabled={value !== wallet}
                                 onClick={onCopy}
                                 ml={2}
                               >
-                                {hasCopied ? 'Copied' : 'Copy'}
+                                {hasCopied ? "Copied" : "Copy"}
                               </Button>
                             </Flex>
                           )
                         })
-                      : ''}
+                      : ""}
                   </UnorderedList>
                 </AlertDialogBody>
               </AlertDialogContent>

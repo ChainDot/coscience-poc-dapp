@@ -12,6 +12,8 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
+  CircularProgressLabel,
+  CircularProgress,
   PopoverHeader,
   PopoverTrigger,
   Skeleton,
@@ -20,6 +22,7 @@ import {
   useDisclosure,
   Collapse
 } from "@chakra-ui/react"
+import { useEffect, useState } from "react"
 import { Link as RouterLink } from "react-router-dom"
 import { useGovernanceContract } from "../hooks/useGovernanceContract"
 import { useReviewsContract } from "../hooks/useReviewsContract"
@@ -36,8 +39,31 @@ const Review = ({ review }) => {
   const { owner, isOwner } = useUsersContract()
   const [status, contractCall] = useCall()
 
+  const [banVote, setBanVote] = useState(0)
+
   const { isOpen, onToggle } = useDisclosure()
   const scheme = useColorModeValue("colorMain", "colorSecond")
+
+  // get governance informations (ban)
+  useEffect(() => {
+    const getBanVotes = async () => {
+      let nbOfBanVote = await governance.filters.Voted(
+        reviews.address,
+        Number(review.id),
+        null
+      )
+      nbOfBanVote = await governance.queryFilter(nbOfBanVote)
+      setBanVote(nbOfBanVote.length)
+    }
+    if (governance) {
+      getBanVotes()
+      governance.on("Voted", getBanVotes)
+    }
+    return () => {
+      setBanVote(0)
+      governance?.off("Voted", getBanVotes)
+    }
+  }, [governance, reviews, review.id])
 
   async function banPost(id) {
     await contractCall(reviews, "banPost", [id])
@@ -134,7 +160,7 @@ const Review = ({ review }) => {
 
           <Text mt="10">{review.content}</Text>
           <VoteOnReview id={review.id} review={review} />
-          <Button colorScheme={scheme} variant="link" onClick={onToggle} mt="4">
+          <Button colorScheme={scheme} variant="link" onClick={onToggle} my="4">
             {review.comments.length === 0
               ? ""
               : `${review.comments.length} comments`}
@@ -145,8 +171,8 @@ const Review = ({ review }) => {
             <CommentList on={review} />
           </Collapse>
           <Box>
-            {isOwner ? (
-              owner !== governance.address ? (
+            {owner !== governance.address ? (
+              isOwner ? (
                 <Button
                   onClick={() => banPost(review.id)}
                   isLoading={
@@ -160,7 +186,13 @@ const Review = ({ review }) => {
                   Ban
                 </Button>
               ) : (
+                ""
+              )
+            ) : (
+              <>
                 <Button
+                  colorScheme="red"
+                  variant="outline"
                   onClick={() => voteToBanReview(review.id)}
                   isLoading={
                     status.startsWith("Waiting") || status.startsWith("Pending")
@@ -170,11 +202,16 @@ const Review = ({ review }) => {
                     status.startsWith("Waiting") || status.startsWith("Pending")
                   }
                 >
-                  Ban Governance
+                  Vote to ban this review
                 </Button>
-              )
-            ) : (
-              "test"
+                {banVote ? (
+                  <CircularProgress ms="4" value={banVote} max="5" color="red">
+                    <CircularProgressLabel>{banVote}/5</CircularProgressLabel>
+                  </CircularProgress>
+                ) : (
+                  ""
+                )}
+              </>
             )}
 
             <Text

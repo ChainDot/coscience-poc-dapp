@@ -122,11 +122,19 @@ const ArticleList = ({ articleList }) => {
                 </Link>
               </Flex>
               <Flex justifyContent="space-between">
-                <Text>Validity: {article.validityVotes}</Text>
-                <Text>Importance: {article.importanceVotes}</Text>
+                <Text>
+                  Validity: {(article.validity + article.validityVotes) / 2} /{" "}
+                  {article.validityVotes}
+                </Text>
+                <Text>Reviews({article.reviews.length})</Text>
               </Flex>
               <Flex justifyContent="space-between">
-                <Text>Reviews({article.reviews.length})</Text>
+                <Text>
+                  Importance:{" "}
+                  {(article.importance + article.importanceVotes) / 2} /{" "}
+                  {article.importanceVotes}
+                </Text>
+
                 <Text>Comments({article.comments.length}) </Text>
               </Flex>
             </Box>

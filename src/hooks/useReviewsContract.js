@@ -28,7 +28,7 @@ const createReviewList = async (reviews, listOfId) => {
 }
 
 export const useReviewsContract = () => {
-  const [reviews, mode, reviewEvents] = useContext(ReviewsContext)
+  const [reviews, , reviewEvents] = useContext(ReviewsContext)
   /*
   useEffect(() => {
     if (reviews) {

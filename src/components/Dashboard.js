@@ -6,15 +6,15 @@ import {
   Tab,
   TabPanel,
   SlideFade
-} from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { useArticlesContract } from '../hooks/useArticlesContract'
-import { useReviewsContract } from '../hooks/useReviewsContract'
-import { useCommentsContract } from '../hooks/useCommentsContract'
-import Loading from './Loading'
-import Accordion from './Accordion'
+} from "@chakra-ui/react"
+import { useEffect, useState } from "react"
+import { useArticlesContract } from "../hooks/useArticlesContract"
+import { useReviewsContract } from "../hooks/useReviewsContract"
+import { useCommentsContract } from "../hooks/useCommentsContract"
+import Loading from "./Loading"
+import Accordion from "./Accordion"
 
-import { useIPFS } from '../hooks/useIPFS'
+import { useIPFS } from "../hooks/useIPFS"
 
 const userContractIds = async (contract, user) => {
   if (contract) {
@@ -84,6 +84,11 @@ const Dashboard = ({ user }) => {
       )
       setCommentList(ipfsCommentInfo)
     })()
+    return () => {
+      setCommentList()
+      setReviewList()
+      setArticleList()
+    }
   }, [
     user,
     articles,
@@ -98,26 +103,26 @@ const Dashboard = ({ user }) => {
   return (
     <>
       <SlideFade
-        threshold='0.1'
+        threshold="0.1"
         delay={{ enter: 0.1 }}
         transition={{
           enter: { duration: 0.7 }
         }}
-        offsetY='100px'
-        offsetX='0px'
+        offsetY="100px"
+        offsetX="0px"
         in
       >
-        <Tabs isFitted variant='enclosed'>
-          <TabList mb='1em'>
-            <Tab fontSize='2xl'>
-              Articles ({articleList !== undefined ? articleList.length : '...'}
+        <Tabs isFitted variant="enclosed">
+          <TabList mb="1em">
+            <Tab fontSize="2xl">
+              Articles ({articleList !== undefined ? articleList.length : "..."}
               )
             </Tab>
-            <Tab fontSize='2xl'>
-              Reviews ({reviewList !== undefined ? reviewList.length : '...'})
+            <Tab fontSize="2xl">
+              Reviews ({reviewList !== undefined ? reviewList.length : "..."})
             </Tab>
-            <Tab fontSize='2xl'>
-              Comments ({commentList !== undefined ? commentList.length : '...'}
+            <Tab fontSize="2xl">
+              Comments ({commentList !== undefined ? commentList.length : "..."}
               )
             </Tab>
           </TabList>
@@ -130,7 +135,7 @@ const Dashboard = ({ user }) => {
                 articleList.map((article) => {
                   return (
                     <Box key={article.id}>
-                      <Accordion object={article} type='Article' />
+                      <Accordion object={article} type="Article" />
                     </Box>
                   )
                 })
@@ -144,7 +149,7 @@ const Dashboard = ({ user }) => {
                 reviewList.map((review) => {
                   return (
                     <Box key={review.id}>
-                      <Accordion object={review} type='Review' />
+                      <Accordion object={review} type="Review" />
                     </Box>
                   )
                 })
@@ -158,7 +163,7 @@ const Dashboard = ({ user }) => {
                 commentList.map((comment) => {
                   return (
                     <Box key={comment.id}>
-                      <Accordion object={comment} type='Comment' />
+                      <Accordion object={comment} type="Comment" />
                     </Box>
                   )
                 })

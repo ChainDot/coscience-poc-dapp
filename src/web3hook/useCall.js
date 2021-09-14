@@ -9,6 +9,7 @@ export const useCall = () => {
   const toast = useToast()
 
   // read function to avoid network change problems
+  // NOT USED IN THIS VERSION
   const readContract = async (contract, functionName, params) => {
     let nbOfParam
     if (params === undefined) {
@@ -57,6 +58,7 @@ export const useCall = () => {
           errorMessage = "unknown error"
           break
       }
+      return errorMessage
     }
   }
 
@@ -123,7 +125,7 @@ export const useCall = () => {
         ),
         status: "success",
         duration: 10000,
-        isClosable: true,
+        isClosable: true
       })
     } catch (e) {
       // If transaction fail
@@ -159,12 +161,12 @@ export const useCall = () => {
         description: errorMessage,
         status: "error",
         duration: 7000,
-        isClosable: true,
+        isClosable: true
       })
     }
 
     return tx
   }
 
-  return [status, contractCall]
+  return [status, contractCall, readContract]
 }

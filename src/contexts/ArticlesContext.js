@@ -52,7 +52,7 @@ const ArticlesContextProvider = ({ children }) => {
         // Importance
         let nbOfImportanceVote = await contract.filters.ImportanceVoted(
           null,
-          Number(i.toString(16)), // need to hexify the number 1 = 0x01
+          Number(i), // need to hexify the number 1 = 0x01
           null
         )
 
@@ -62,7 +62,7 @@ const ArticlesContextProvider = ({ children }) => {
         // Validity
         let nbOfValidityVote = await contract.filters.ValidityVoted(
           null,
-          Number(i.toString(16)), // need to hexify the number
+          Number(i), // need to hexify the number
           null
         )
         eventArray = await contract.queryFilter(nbOfValidityVote)

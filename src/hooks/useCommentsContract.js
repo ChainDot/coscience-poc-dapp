@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { CommentsContext } from '../contexts/CommentsContext'
+import { useContext } from "react"
+import { CommentsContext } from "../contexts/CommentsContext"
 
 //pure function
 
@@ -31,11 +31,11 @@ const createCommentList = async (comments, listOfId) => {
 
 // HOOKS
 export const useCommentsContract = () => {
-  const [comments, mode, commentEvents] = useContext(CommentsContext)
+  const [comments, commentEvents] = useContext(CommentsContext)
 
   if (comments === undefined) {
     throw new Error(
-      'It seems that you are trying to use CommentContext outside of its provider'
+      "It seems that you are trying to use CommentContext outside of its provider"
     )
   }
   return { comments, getCommentData, createCommentList, commentEvents }

@@ -4,10 +4,7 @@ import {
   Heading,
   Container,
   UnorderedList,
-  Button,
-  SlideFade,
-  Tag,
-  Progress
+  SlideFade
 } from "@chakra-ui/react"
 
 import { useUsersContract } from "../hooks/useUsersContract"

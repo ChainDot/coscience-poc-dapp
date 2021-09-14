@@ -179,7 +179,6 @@ export const useIPFS = () => {
         timeout: 5000
       })
     } catch (e) {
-      // manage IPFS error
       response = {
         data: "IPFS: too much time to get a response"
       }

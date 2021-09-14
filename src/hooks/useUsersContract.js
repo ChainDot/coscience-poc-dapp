@@ -1,17 +1,17 @@
-import { useContext } from 'react'
-import { UsersContext } from '../contexts/UsersContext'
+import { useContext } from "react"
+import { UsersContext } from "../contexts/UsersContext"
 
 // Pure function
 const enumStatus = (status) => {
   switch (status) {
     case 0:
-      return 'Not approved'
+      return "Not approved"
     case 1:
-      return 'Pending'
+      return "Pending"
     case 2:
-      return 'Approved'
+      return "Approved"
     default:
-      return 'Unknown status'
+      return "Unknown status"
   }
 }
 
@@ -39,8 +39,7 @@ export const getUserData = async (users, id) => {
 // hooks
 export const useUsersContract = () => {
   // call the context
-  const [users, mode, userData, userList, owner, isOwner] =
-    useContext(UsersContext)
+  const [users, , userData, userList, owner, isOwner] = useContext(UsersContext)
 
   // control call of the hook
   if (users === undefined) {

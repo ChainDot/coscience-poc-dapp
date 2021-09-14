@@ -15,7 +15,7 @@ export const getArticleData = async (articles, id) => {
     abstractCID: a.abstractCID,
     contentCID: a.contentCID,
     comments: a.comments,
-    reviews: a.reviews,
+    reviews: a.reviews
   }
   return articleObj
 }
@@ -35,8 +35,7 @@ const createArticleList = async (articles, listOfId) => {
 // -----------------------------------------------------HOOK
 export const useArticlesContract = () => {
   // call the context with global state
-  const [articles, mode, articleList, articleEvents] =
-    useContext(ArticlesContext)
+  const [articles, , articleList, articleEvents] = useContext(ArticlesContext)
 
   // filter events
   /*
@@ -65,6 +64,6 @@ export const useArticlesContract = () => {
     articleList,
     getArticleData,
     createArticleList,
-    articleEvents,
+    articleEvents
   }
 }

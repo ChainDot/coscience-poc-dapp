@@ -5,13 +5,14 @@ import { FaHeart } from "react-icons/fa"
 import { useCommentsContract } from "../hooks/useCommentsContract"
 import { useCall } from "../web3hook/useCall"
 
-const VoteOnComment = ({ id, comment }) => {
+const VoteOnComment = ({ comment }) => {
   const { comments } = useCommentsContract()
   const [status, contractCall] = useCall()
 
   async function VoteOn() {
-    await contractCall(comments, "vote", [id])
+    await contractCall(comments, "vote", [comment.id])
   }
+
   return (
     <Flex my="5" alignItems="center">
       <IconButton
@@ -23,7 +24,7 @@ const VoteOnComment = ({ id, comment }) => {
         disabled={status.startsWith("Waiting") || status.startsWith("Pending")}
         me="1"
         borderRadius="full"
-        variant="link"
+        variant="ghost"
       />
 
       <Text>{comment.nbVotes}</Text>

@@ -12,6 +12,8 @@ import {
   DrawerHeader,
   DrawerFooter,
   useDisclosure,
+  CircularProgressLabel,
+  CircularProgress,
   Link,
   Button,
   Flex,
@@ -52,95 +54,112 @@ const Article = () => {
 
   const [article, setArticle] = useState()
 
+  const [index, setIndex] = useState(0)
+  const [banVote, setBanVote] = useState(0)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef()
 
   // get data of the displayed article
   useEffect(() => {
-    if (articles) {
-      const articleData = async () => {
-        const articleObj = await getArticleData(articles, id)
+    const articleData = async () => {
+      const articleObj = await getArticleData(articles, id)
 
-        //get validity and Importance
-        const validity = articleObj.validity
-        const importance = articleObj.importance
+      const isBanned = articleObj.contentBanned
 
-        // get number of voter
-        //event ValidityVoted(Vote indexed choice, uint256 indexed articleID, uint256 indexed userID);
-        // Contract
-        let nbOfImportanceVote = await articles.filters.ImportanceVoted(
-          null,
-          Number(id.toString(16)), // need to hexify the number 1 = 0x01
-          null
-        )
-        let eventArray = await articles.queryFilter(nbOfImportanceVote)
-        const importanceVotes = eventArray.length
+      // get number of voters
+      let nbOfImportanceVote = await articles.filters.ImportanceVoted(
+        null,
+        Number(id.toString(16)), // need to hexify the number 1 = 0x01
+        null
+      )
+      let eventArray = await articles.queryFilter(nbOfImportanceVote)
+      const importanceVotes = eventArray.length
 
-        let nbOfValidityVote = await articles.filters.ValidityVoted(
-          null,
-          Number(id.toString(16)), // need to hexify the number
-          null
-        )
-        eventArray = await articles.queryFilter(nbOfValidityVote)
-        const validityVotes = eventArray.length
+      let nbOfValidityVote = await articles.filters.ValidityVoted(
+        null,
+        Number(id.toString(16)), // need to hexify the number
+        null
+      )
+      eventArray = await articles.queryFilter(nbOfValidityVote)
+      const validityVotes = eventArray.length
 
-        // get content
-        const { title, abstract } = await readIPFS(articleObj.abstractCID)
-        const { content, pdfFile } = await readIPFS(articleObj.contentCID)
-        // get user info
-        const userID = await users.profileID(articleObj.author)
-        const struct = await users.userInfo(userID)
-        const { firstName, lastName } = await readIPFS(struct.nameCID)
-        const { laboratory } = await readIPFS(struct.profileCID)
+      // get content
+      const { title, abstract } = await readIPFS(articleObj.abstractCID)
+      const { content, pdfFile } = await readIPFS(articleObj.contentCID)
+      // get user info
+      const userID = await users.profileID(articleObj.author)
+      const struct = await users.userInfo(userID)
+      const { firstName, lastName } = await readIPFS(struct.nameCID)
+      const { laboratory } = await readIPFS(struct.profileCID)
 
-        // get co author info
-        let coAuthors = []
-        for (const coAuthor of articleObj.coAuthor) {
-          const coAuthorId = await users.profileID(coAuthor)
-          if (coAuthorId !== 0) {
-            const struct = await users.userInfo(coAuthorId)
-            const { firstName, lastName } = await readIPFS(struct.nameCID)
-            const { laboratory } = await readIPFS(struct.profileCID)
-            coAuthors.push({ id: coAuthorId, firstName, lastName, laboratory })
-          } // else return that author is not registred ?
-        }
-        // 0x2738549D4a37A9cA43a31EEcb1943fa9285E11b5
-        // 0xA8674F9cEE637DD4de558D6E9B88db47225AF4C9
-        // 0x90f92C106612Edc66167ae8d94e4959cCC9f4958
-
-        setArticle({
-          ...articleObj,
-          title,
-          abstract,
-          content,
-          pdfFile,
-          authorID: userID,
-          firstName,
-          lastName,
-          laboratory,
-          coAuthors, // coAuthor: [{coAuthorId, firstName, lastName, laboratory},{}]
-          validity,
-          importance,
-          validityVotes,
-          importanceVotes
-        })
-
-        // listen the event with the filter
-        articles.on(nbOfValidityVote, articleData)
-        articles.on(nbOfImportanceVote, articleData)
-        reviews?.on("Posted", articleData)
-        comments?.on("Posted", articleData)
-        return () => {
-          articles.off(nbOfValidityVote, articleData)
-          articles.off(nbOfImportanceVote, articleData)
-          reviews?.off("Posted", articleData)
-          comments?.off("Posted", articleData)
-        }
+      // get co author info
+      let coAuthors = []
+      for (const coAuthor of articleObj.coAuthor) {
+        const coAuthorId = await users.profileID(coAuthor)
+        if (coAuthorId !== 0) {
+          const struct = await users.userInfo(coAuthorId)
+          const { firstName, lastName } = await readIPFS(struct.nameCID)
+          const { laboratory } = await readIPFS(struct.profileCID)
+          coAuthors.push({ id: coAuthorId, firstName, lastName, laboratory })
+        } // else return that author is not registred ?
       }
+      // 0x2738549D4a37A9cA43a31EEcb1943fa9285E11b5
+      // 0xA8674F9cEE637DD4de558D6E9B88db47225AF4C9
+      // 0x90f92C106612Edc66167ae8d94e4959cCC9f4958
+
+      setArticle({
+        ...articleObj,
+        title,
+        abstract,
+        content,
+        pdfFile,
+        authorID: userID,
+        firstName,
+        lastName,
+        laboratory,
+        coAuthors, // coAuthor: [{coAuthorId, firstName, lastName, laboratory},{}]
+        validityVotes,
+        importanceVotes,
+        isBanned
+      })
+    }
+    if (articles) {
       articleData()
-      // CLEAN UP !!
+      // listen the event with the filter
+      articles.on("ImportanceVoted", articleData)
+      articles.on("ValidityVoted", articleData)
+      reviews?.on("Posted", articleData)
+      comments?.on("Posted", articleData)
+    }
+    return () => {
+      setArticle()
+      articles?.off("ImportanceVoted", articleData)
+      articles?.off("ValidityVoted", articleData)
+      reviews?.off("Posted", articleData)
+      comments?.off("Posted", articleData)
     }
   }, [articles, getArticleData, id, readIPFS, users, reviews, comments])
+
+  // check governance for ban the article
+  useEffect(() => {
+    const getBanVotes = async () => {
+      let nbOfBanVote = await governance.filters.Voted(
+        articles.address,
+        Number(id),
+        null
+      )
+      nbOfBanVote = await governance.queryFilter(nbOfBanVote)
+      setBanVote(nbOfBanVote.length)
+    }
+    if (governance) {
+      getBanVotes()
+      governance.on("Voted", getBanVotes)
+    }
+    return () => {
+      setBanVote(0)
+      governance?.off("Voted", getBanVotes)
+    }
+  }, [governance, articles, id])
 
   // ban
   async function banArticle(id) {
@@ -149,6 +168,11 @@ const Article = () => {
 
   async function voteToBanArticle(id) {
     await contractCall(governance, "voteToBanArticle", [id])
+  }
+
+  function openDrawer(index) {
+    setIndex(index)
+    onOpen()
   }
 
   //                  Color Value
@@ -169,8 +193,9 @@ const Article = () => {
         <Container py="10" maxW="container.xl">
           {article ? (
             article.id !== 0 ? (
+              // article?.isBanned ? (<Text>Article n°{article.id} has been Banned</Text>) : ()) : ()) : (<Loading />) }
               <>
-                <Box key={article.id}>
+                <Box>
                   <Heading
                     fontFamily="title"
                     fontSize="6xl"
@@ -251,7 +276,14 @@ const Article = () => {
                   >
                     Content
                   </Heading>
-                  <Text my="4">{article.content}</Text>
+                  {article.content ? (
+                    <Text my="4">{article.content}</Text>
+                  ) : (
+                    <Text color="gray">
+                      IPFS cannot be read at this time, try later
+                    </Text>
+                  )}
+
                   <Heading
                     fontSize="lg"
                     as="h3"
@@ -268,7 +300,7 @@ const Article = () => {
 
                   <Flex mb="10">
                     <Button
-                      onClick={onOpen}
+                      onClick={() => openDrawer(0)}
                       colorScheme={scheme}
                       me="4"
                       variant="link"
@@ -277,7 +309,7 @@ const Article = () => {
                       {article !== undefined ? article.reviews.length : "..."})
                     </Button>
                     <Button
-                      onClick={onOpen}
+                      onClick={() => openDrawer(1)}
                       colorScheme={scheme}
                       variant="link"
                     >
@@ -294,6 +326,62 @@ const Article = () => {
                     <SendReview id={id} />
                     <SendComment id={id} targetAddress={articles.address} />
                   </Flex>
+                  <Box>
+                    {/*Owner Options */}
+                    {owner !== governance?.address ? (
+                      isOwner ? (
+                        <Button
+                          onClick={() => banArticle(id)}
+                          isLoading={
+                            status.startsWith("Waiting") ||
+                            status.startsWith("Pending")
+                          }
+                          loadingText={status}
+                          disabled={
+                            status.startsWith("Waiting") ||
+                            status.startsWith("Pending")
+                          }
+                        >
+                          Ban
+                        </Button>
+                      ) : (
+                        ""
+                      )
+                    ) : (
+                      <>
+                        <Button
+                          colorScheme="red"
+                          variant="outline"
+                          onClick={() => voteToBanArticle(id)}
+                          isLoading={
+                            status.startsWith("Waiting") ||
+                            status.startsWith("Pending")
+                          }
+                          loadingText={status}
+                          disabled={
+                            status.startsWith("Waiting") ||
+                            status.startsWith("Pending")
+                          }
+                        >
+                          Vote to ban this article
+                        </Button>
+                        {banVote ? (
+                          <CircularProgress
+                            ms="4"
+                            value={banVote}
+                            max="5"
+                            color="red"
+                          >
+                            <CircularProgressLabel>
+                              {banVote}/5
+                            </CircularProgressLabel>
+                          </CircularProgress>
+                        ) : (
+                          ""
+                        )}
+                      </>
+                    )}
+                  </Box>
                 </Box>
               </>
             ) : (
@@ -304,40 +392,6 @@ const Article = () => {
           ) : (
             <Loading />
           )}
-          <Box>
-            {/*Owner Options */}
-            {owner !== governance?.address ? (
-              isOwner ? (
-                <Button
-                  onClick={() => banArticle(id)}
-                  isLoading={
-                    status.startsWith("Waiting") || status.startsWith("Pending")
-                  }
-                  loadingText={status}
-                  disabled={
-                    status.startsWith("Waiting") || status.startsWith("Pending")
-                  }
-                >
-                  Ban
-                </Button>
-              ) : (
-                ""
-              )
-            ) : (
-              <Button
-                onClick={() => voteToBanArticle(id)}
-                isLoading={
-                  status.startsWith("Waiting") || status.startsWith("Pending")
-                }
-                loadingText={status}
-                disabled={
-                  status.startsWith("Waiting") || status.startsWith("Pending")
-                }
-              >
-                Vote for ban
-              </Button>
-            )}
-          </Box>
         </Container>
       </Box>
 
@@ -355,7 +409,7 @@ const Article = () => {
 
           <DrawerBody>
             {/* TABS */}
-            <Tabs size="md" variant="enclosed">
+            <Tabs defaultIndex={index} size="md" variant="enclosed">
               <TabList>
                 <Tab>
                   Reviews (

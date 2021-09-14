@@ -21,7 +21,7 @@ const articleReviewIds = async (reviews, article) => {
 }
 
 const ReviewList = ({ article }) => {
-  const { reviews, createReviewList, reviewEvents } = useReviewsContract()
+  const { reviews, createReviewList } = useReviewsContract()
   const { users } = useUsersContract()
   const [, readIPFS] = useIPFS()
 
@@ -29,63 +29,67 @@ const ReviewList = ({ article }) => {
 
   // get review data
   useEffect(() => {
-    if (reviews && article !== undefined && reviewEvents !== undefined) {
-      const reviewData = async () => {
-        const listOfId = await articleReviewIds(reviews, article)
-        const reviewList = await createReviewList(reviews, listOfId)
-        let nbReviewVote
-        const asyncRes = await Promise.all(
-          reviewList.map(async (review) => {
-            // get the content from IFPS
-            const { title, content } = await readIPFS(review.contentCID)
+    const reviewData = async () => {
+      const listOfId = await articleReviewIds(reviews, article)
+      const reviewList = await createReviewList(reviews, listOfId)
+      let nbReviewVote
+      const asyncRes = await Promise.all(
+        reviewList.map(async (review) => {
+          // get the content from IFPS
+          const { title, content } = await readIPFS(review.contentCID)
 
-            //get review vote
-            const structReview = await reviews.reviewInfo(review.id)
-            const { vote, id } = structReview
+          //get review vote
+          const structReview = await reviews.reviewInfo(review.id)
+          const { vote, id } = structReview
 
-            // event listener nb of vote
-            nbReviewVote = await reviews.filters.Voted(null, Number(id), null)
-            reviews.on(nbReviewVote, reviewData)
+          // event listener nb of vote
+          nbReviewVote = await reviews.filters.Voted(null, Number(id), null)
+          reviews.on(nbReviewVote, reviewData)
 
-            const eventArray = await reviews.queryFilter(nbReviewVote)
-            const nbVotes = eventArray.length
+          const eventArray = await reviews.queryFilter(nbReviewVote)
+          const nbVotes = eventArray.length
 
-            // get user info
-            const authorID = await users.profileID(review.author)
-            const struct = await users.userInfo(authorID)
+          // get user info
+          const authorID = await users.profileID(review.author)
+          const struct = await users.userInfo(authorID)
+          const { firstName, lastName } = await readIPFS(struct.nameCID)
 
-            const { firstName, lastName } = await readIPFS(struct.nameCID)
+          // event information
+          let reviewEvent = await reviews.filters.Posted(null, review.id, null)
+          reviewEvent = await reviews.queryFilter(reviewEvent)
+          const block = await reviewEvent[0].getBlock()
+          const date = new Date(block.timestamp * 1000)
 
-            // get event info
-            const { txHash, timestamp, blockNumber, date } =
-              reviewEvents[review.id]
+          return {
+            ...review,
+            title,
+            authorID,
+            content,
+            firstName,
+            lastName,
+            txHash: reviewEvent[0].transactionHash,
+            timestamp: block.timestamp,
+            blockNumber: reviewEvent[0].blockNumber,
+            date: date.toLocaleString(),
+            vote,
+            nbVotes
+          }
+        })
+      )
 
-            return {
-              ...review,
-              title,
-              authorID,
-              content,
-              firstName,
-              lastName,
-              txHash,
-              timestamp,
-              blockNumber,
-              date,
-              vote,
-              nbVotes
-            }
-          })
-        )
-
-        setReviewList(asyncRes)
-
-        return () => {
-          reviews.off(nbReviewVote, reviewData)
-        }
-      }
-      reviewData()
+      setReviewList(asyncRes)
     }
-  }, [reviews, article, readIPFS, createReviewList, users, reviewEvents])
+    if (reviews && article !== undefined) {
+      reviewData()
+      reviews.on("Voted", reviewData)
+      reviews.on("Posted", reviewData)
+    }
+    return () => {
+      setReviewList()
+      reviews?.off("Voted", reviewData)
+      reviews?.off("Posted", reviewData)
+    }
+  }, [reviews, article, readIPFS, createReviewList, users])
 
   return (
     <>

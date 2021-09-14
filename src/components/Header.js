@@ -10,6 +10,13 @@ import {
   VStack,
   CloseButton,
   Heading,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
   Text,
   Link
 } from "@chakra-ui/react"
@@ -19,20 +26,139 @@ import { useColorMode } from "@chakra-ui/react"
 import { Link as RouterLink } from "react-router-dom"
 import { useUsersContract } from "../hooks/useUsersContract"
 import HeaderLinks from "./HeaderLinks"
+import Notifs from "./Notifs"
+import { useGovernanceContract } from "../hooks/useGovernanceContract"
+import { useArticlesContract } from "../hooks/useArticlesContract"
+import { useReviewsContract } from "../hooks/useReviewsContract"
 
-//in small sizeburgerMenu, close not only with cross but add a component for clicking outside menu too.
+// Pure functions
+const itemType = (address, articles, reviews) => {
+  if (address === articles.address) {
+    return "Ban an article"
+  } else if (address === reviews.address) {
+    return "Ban a review"
+  } else {
+    return "Ban a comment"
+  }
+}
+
+const voteProgression = async (
+  contract,
+  eventName,
+  indexed1,
+  indexed2,
+  indexed3
+) => {
+  let nbOfVote = await contract.filters[eventName](indexed1, indexed2, indexed3)
+  nbOfVote = await contract.queryFilter(nbOfVote)
+  return nbOfVote
+}
+
+// Component
 const Header = () => {
-  //login for the sign up to add.<Badge colorScheme="purple">New</Badge>
   const { userData, userList } = useUsersContract()
+  const { governance } = useGovernanceContract()
+  const { articles } = useArticlesContract()
+  const { reviews } = useReviewsContract()
+  const { users } = useUsersContract()
 
   const mobileNav = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   // useState
   const [count, setCount] = useState(0)
+  const [notifs, setNotifs] = useState([])
 
   //Color mode
   const { colorMode, toggleColorMode } = useColorMode()
 
+  // get notifications
+  useEffect(() => {
+    const getNotifs = async () => {
+      const eventTab = []
+
+      // Item events
+      const banItemEvents = await governance.queryFilter("Voted")
+      for (const event of banItemEvents) {
+        const notifType = itemType(
+          event.args.contractAddress,
+          articles,
+          reviews
+        )
+        const nbOfVote = await voteProgression(
+          governance,
+          "Voted",
+          event.args.contractAddress,
+          event.args.itemID.toNumber(),
+          null
+        )
+        const obj = {
+          notifType,
+          who: event.args.userID.toNumber(),
+          itemID: event.args.itemID.toNumber(),
+          progression: nbOfVote.length,
+          blockNumber: event.blockNumber,
+          date: 0
+        }
+        eventTab.push(obj)
+      }
+
+      // user events
+      const userEvents = await governance.queryFilter("UserVoted")
+      for (const event of userEvents) {
+        const notifType =
+          event.args.voteType === 0 ? "Accept an user" : "Ban an user"
+        const nbOfVote = await voteProgression(
+          governance,
+          "UserVoted",
+          null,
+          event.args.subjectUserID.toNumber(),
+          null
+        )
+        const obj = {
+          notifType,
+          who: event.args.userID.toNumber(),
+          itemID: event.args.subjectUserID.toNumber(),
+          progression: nbOfVote.length,
+          blockNumber: event.blockNumber,
+          date: 0
+        }
+        eventTab.push(obj)
+      }
+
+      // register event
+      const registerEvents = await users.queryFilter("Registered")
+      for (const event of registerEvents) {
+        // check if id is approved
+        const { status } = await users.userInfo(event.args.userID.toNumber())
+        if (status === 2) {
+          continue
+        }
+        const obj = {
+          notifType: "User registration pending",
+          who: event.args.userID.toNumber(),
+          itemID: event.args.userID.toNumber(),
+          progression: 0,
+          blockNumber: event.blockNumber,
+          date: 0
+        }
+        eventTab.push(obj)
+      }
+
+      // sort by blockNumber
+      const sortedTab = eventTab.sort((a, b) => b.blockNumber - a.blockNumber)
+      setNotifs(sortedTab)
+    }
+    if (governance && articles && reviews) {
+      getNotifs()
+      // listen event
+    }
+    return () => {
+      setNotifs([])
+    }
+  }, [governance, articles, users, reviews])
+
+  // Get informations on governance actions
   useEffect(() => {
     setCount(0)
     userList.forEach((el) => {
@@ -43,7 +169,6 @@ const Header = () => {
   }, [userList])
 
   //    Color Value
-
   const bg = useColorModeValue("white", "grayBlue.900")
   const co = useColorModeValue("main", "second")
   const button = useColorModeValue("colorMain", "colorSecond")
@@ -144,7 +269,7 @@ const Header = () => {
                   color={button}
                   aria-label="Bell notification"
                   icon={<BellIcon />}
-                  as={RouterLink}
+                  onClick={onOpen}
                   to="/list-of-users"
                   borderRadius="full"
                 />
@@ -165,6 +290,34 @@ const Header = () => {
                 >
                   {count}
                 </Badge>
+                {/* DRAWER NOTIFS */}
+                <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader>Governance notifications</DrawerHeader>
+
+                    <DrawerBody>
+                      {notifs.map((notif) => {
+                        return (
+                          <Box
+                            mb="4"
+                            borderRadius="5"
+                            p="2"
+                            bg="green.100"
+                            key={notif.blockNumber}
+                          >
+                            <Notifs notif={notif} />
+                          </Box>
+                        )
+                      })}
+                    </DrawerBody>
+
+                    <DrawerFooter>
+                      <Text>FOOTER</Text>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
               </Box>
             </HStack>
           </HStack>

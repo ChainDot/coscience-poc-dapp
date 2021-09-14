@@ -13,10 +13,8 @@ const VoteOnReview = ({ id, review }) => {
     await contractCall(reviews, "vote", [choice, id])
   }
 
-  console.log("review", review)
   return (
     <Flex my="5" alignItems="center">
-      {/* <Text>Review </Text> */}
       <Box>
         <IconButton
           colorScheme="green"

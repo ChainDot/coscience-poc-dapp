@@ -1,10 +1,10 @@
-import { useContext } from 'react'
-import { GovernanceContext } from '../contexts/GovernanceContext'
+import { useContext } from "react"
+import { GovernanceContext } from "../contexts/GovernanceContext"
 
 // -----------------------------------------------------HOOK
 export const useGovernanceContract = () => {
   // call the context with global state
-  const [governance, mode] = useContext(GovernanceContext)
+  const [governance] = useContext(GovernanceContext)
 
   // control call of the hook
   if (governance === undefined) {
