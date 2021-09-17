@@ -47,7 +47,7 @@ const VoteOnReview = ({ id, review }) => {
         />
       </Box>
       <Text>
-        {review.vote - review.vote} / {review.nbVotes}
+        {(Number(review.vote) + Number(review.nbVotes)) / 2} / {review.nbVotes}
       </Text>
     </Flex>
   )

@@ -10,6 +10,8 @@ import {
   Button,
   Popover,
   Spacer,
+  CircularProgressLabel,
+  CircularProgress,
   PopoverTrigger,
   PopoverContent,
   PopoverHeader,
@@ -47,10 +49,14 @@ import { useUsersContract } from "../hooks/useUsersContract"
 import UserSetting from "./UserSetting"
 import mailgo from "mailgo"
 import React, { useEffect } from "react"
+import { useCall } from "../web3hook/useCall"
+import { useGovernanceContract } from "../hooks/useGovernanceContract"
 
 const DashSide = ({ user }) => {
   const { userData } = useUsersContract()
   const [isOpenSetting, setIsOpenSetting] = useState()
+  const { governance } = useGovernanceContract()
+  const [status, contractCall] = useCall()
 
   const [value, setValue] = useState()
   const { hasCopied, onCopy } = useClipboard(value)
@@ -68,9 +74,13 @@ const DashSide = ({ user }) => {
   const link = useColorModeValue("main", "second")
   const bg = useColorModeValue("grayOrange.200", "grayBlue.700")
 
+  async function voteForRecover(address) {
+    contractCall(governance, "voteToRecover", [user.id, address])
+  }
+
   return (
     <>
-      <Box p="10" w={{ base: "full", lg: "25vw" }} bg={bg}>
+      <Box p="10" w={{ base: "full", xl: "25vw" }} bg={bg}>
         <SlideFade
           threshold="0.1"
           delay={{ enter: 0.1 }}
@@ -86,8 +96,9 @@ const DashSide = ({ user }) => {
               <Avatar
                 me="4"
                 size="2xl"
-                name="Segun Adebayo"
-                src="https://bit.ly/sage-adebayo"
+                name="Albert Einstein"
+                src="https://upload.wikimedia.org/wikipedia/commons/1/14/Albert_Einstein_1947.jpg"
+                alt="avatar"
               />{" "}
               <Flex justifyContent="space-between" flexDirection="column">
                 <Badge
@@ -101,6 +112,7 @@ const DashSide = ({ user }) => {
                       ? "green.400"
                       : "red.400"
                   }
+                  alt="status of user"
                 >
                   {user.status}
                 </Badge>
@@ -111,6 +123,7 @@ const DashSide = ({ user }) => {
                   colorScheme={button}
                   p="3"
                   fontWeight="bold"
+                  alt="ID of user"
                 >
                   ID #{user.id}
                 </Tag>
@@ -123,7 +136,12 @@ const DashSide = ({ user }) => {
 
               <Popover placement="top-start">
                 <PopoverTrigger>
-                  <IconButton variant="Link" color={link} icon={<InfoIcon />} />
+                  <IconButton
+                    variant="Link"
+                    color={link}
+                    icon={<InfoIcon />}
+                    aria-label="info ipfs icon button"
+                  />
                 </PopoverTrigger>
                 <PopoverContent w="100%" textAlign="start" p="2">
                   <PopoverHeader fontWeight="semibold">
@@ -138,6 +156,7 @@ const DashSide = ({ user }) => {
                         color={link}
                         isExternal
                         href={`https://ipfs.io/ipfs/${user.profileCID}`}
+                        aria-label="ipfs redirection link"
                       >
                         ipfs.io
                       </Link>{" "}
@@ -149,6 +168,7 @@ const DashSide = ({ user }) => {
                         color={link}
                         isExternal
                         href={`https://ipfs.io/ipfs/${user.nameCID}`}
+                        aria-label="ipfs redirection link"
                       >
                         ipfs.io
                       </Link>{" "}
@@ -161,7 +181,7 @@ const DashSide = ({ user }) => {
               {Number(user.id) === userData.id ? (
                 <IconButton
                   colorScheme={button}
-                  aria-label="Call Segun"
+                  aria-label="setting button"
                   size="lg"
                   icon={<SettingsIcon />}
                   onClick={setIsOpenSetting}
@@ -176,7 +196,7 @@ const DashSide = ({ user }) => {
               <ModalOverlay />
               <ModalContent>
                 <ModalHeader>Settings</ModalHeader>
-                <ModalCloseButton />
+                <ModalCloseButton aria-label="modal close button" />
                 <ModalBody pb={6}>
                   <UserSetting user={user} />
                 </ModalBody>
@@ -186,16 +206,19 @@ const DashSide = ({ user }) => {
             {/* USER PROFILE */}
 
             <Flex my="4" alignItems="center">
-              <EmailIcon me="4" />
-              <Link href={`mailto:${user.email}`}>
+              <EmailIcon me="4" alt="email icon" />
+              <Link
+                href={`mailto:${user.email}`}
+                aria-label="email redirection"
+              >
                 {user.email}
-                <LinkIcon mx="2px" />
+                <LinkIcon mx="2px" alt="link icon" />
               </Link>
             </Flex>
             <Text my="2">Laboratory: {user.laboratory}</Text>
 
             <Text my="4" fontWeight="bold">
-              <ChatIcon /> Bio:
+              <ChatIcon alt="biography icon" /> Bio:
             </Text>
 
             <Box borderRadius="5" bg={bg} w="100%" p={4}>
@@ -208,6 +231,7 @@ const DashSide = ({ user }) => {
               px={6}
               colorScheme={button}
               onClick={setIsOpen}
+              aria-label="wallet list button"
             >
               Wallet List
             </Button>
@@ -233,6 +257,7 @@ const DashSide = ({ user }) => {
                                 disabled={value !== wallet}
                                 onClick={onCopy}
                                 ml={2}
+                                aria-label="copy button"
                               >
                                 {hasCopied ? "Copied" : "Copy"}
                               </Button>
@@ -244,6 +269,56 @@ const DashSide = ({ user }) => {
                 </AlertDialogBody>
               </AlertDialogContent>
             </AlertDialog>
+
+            {/* VOTE FOR RECOVER ACCOUNT */}
+            {user.recoverAddress.length === 0 ? (
+              ""
+            ) : (
+              <Box p="4" borderRadius="6" border="solid" textAlign="center">
+                <Heading mb="4">Recover account asked</Heading>
+                {user.recoverAddress.map((ask) => {
+                  return (
+                    <Box key={ask.address}>
+                      <Text mb="2">{ask.address}</Text>
+                      <Flex
+                        mb="4"
+                        justifyContent="space-around"
+                        alignItems="center"
+                      >
+                        <Button
+                          isLoading={
+                            status.startsWith("Waiting") ||
+                            status.startsWith("Pending")
+                          }
+                          loadingText={status}
+                          disabled={
+                            status.startsWith("Waiting") ||
+                            status.startsWith("Pending")
+                          }
+                          onClick={() => voteForRecover(ask.address)}
+                          colorScheme={button}
+                          aria-label="click to approve the address for recover account"
+                        >
+                          Vote to approve this address
+                        </Button>
+                        <CircularProgress
+                          me="4"
+                          value={ask.nbOfVote}
+                          max="5"
+                          color="second"
+                          my="auto"
+                          ms="5"
+                        >
+                          <CircularProgressLabel>
+                            {ask.nbOfVote}/5
+                          </CircularProgressLabel>
+                        </CircularProgress>
+                      </Flex>
+                    </Box>
+                  )
+                })}
+              </Box>
+            )}
           </Flex>
         </SlideFade>
       </Box>

@@ -47,6 +47,7 @@ const SendComment = ({ targetAddress, id }) => {
           ms={{ base: '', lg: 'auto' }}
           onClick={onToggle}
           colorScheme={scheme}
+          aria-label='add comment button'
         >
           {isOpen ? 'X' : 'Add comment'}
         </Button>
@@ -81,6 +82,7 @@ const SendComment = ({ targetAddress, id }) => {
                   status.startsWith('Pending') ||
                   ipfsStatus.startsWith('Pinning')
                 }
+                aria-label='submit button'
               >
                 Submit
               </Button>

@@ -12,6 +12,7 @@ import RecoverAccount from "./pages/RecoverAccount"
 import Home from "./pages/Home"
 import Article from "./pages/Article"
 import ConfigModal from "./components/ConfigModal"
+import Page404 from "./pages/Page404"
 
 const Dapp = () => {
   // color Mode
@@ -46,6 +47,9 @@ const Dapp = () => {
           </Route>
           <Route exact path="/article/:id">
             <Article />
+          </Route>
+          <Route path="*">
+            <Page404 />
           </Route>
         </Switch>
         <Footer />

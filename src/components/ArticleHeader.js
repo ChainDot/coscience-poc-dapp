@@ -72,6 +72,7 @@ const ArticleHeader = ({ id, article, eventList }) => {
                   color={link}
                   isExternal
                   href={`https://rinkeby.etherscan.io/tx/${article.author}`}
+                  aria-label='etherscan link'
                 >
                   {article.author.slice(0, 20)}...
                 </Link>{" "}
@@ -83,6 +84,7 @@ const ArticleHeader = ({ id, article, eventList }) => {
                   color={link}
                   isExternal
                   href={`https://rinkeby.etherscan.io/txs?block=${eventList[id].blockNumber}`}
+                  aria-label='etherscan link'
                 >
                   {eventList[id].blockNumber}
                 </Link>{" "}
@@ -95,6 +97,7 @@ const ArticleHeader = ({ id, article, eventList }) => {
                   color={link}
                   isExternal
                   href={`https://rinkeby.etherscan.io/tx/${eventList[id].txHash}`}
+                  aria-label='etherscan link'
                 >
                   {eventList[id].txHash.slice(0, 15)}...
                 </Link>{" "}
@@ -107,6 +110,7 @@ const ArticleHeader = ({ id, article, eventList }) => {
                   color={link}
                   isExternal
                   href={`https://ipfs.io/ipfs/${article.abstractCID}`}
+                  aria-label='ipfs link'
                 >
                   {article.abstractCID.slice(0, 15)}...
                 </Link>{" "}
@@ -118,6 +122,7 @@ const ArticleHeader = ({ id, article, eventList }) => {
                   color={link}
                   isExternal
                   href={`https://ipfs.io/ipfs/${article.contentCID}`}
+                  aria-label='ipfs link'
                 >
                   {article.contentCID.slice(0, 15)}...
                 </Link>{" "}

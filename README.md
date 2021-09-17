@@ -2,49 +2,15 @@
 
 ## Architecture
 
-**Schema**
+This is the old schema of the architecture.
+![architecture](./src/assets/architecture.png)
+
+_The new architecture comming soon_
 
 ## TODO in this repo
 
-- notifs (article in banning) ONLY for owner (while no governance)
-- useIFPS => setTimeout (especially for freshly pinned content) => manage error and display it
-- votes on article / review / comment
-- Governance => switch owner => governance (display, owner or gov)
-- Governance vote for (accept, ban, recover (listOfUser), 3 item ban (Article))
-- display votes on Home
-- recoverAccount (off chain => Bob send mail to approved member + add a newWallet)
-
--fix dashboard => tab comment => link to the wrong article
-
-- BACKEND => call need recoverAccount
-
-- General modal (before provider is found) (wrap Dapp) (before load website)
-
-Providers
-
-- change network (not complety finish but OK)
-- function to read contract?
-
-Data
-
-- listen event => instant refresh
-
-PREZ
-
-- update diapo
-
-- Crawler with `react-router-dom`❌ (Not in this version)
-
-## TODO in the backend (Not in this version)
-
-- deployment on several blockchain (matic & bsc) with the same address ❌
-- add metrics❌ (vote)
-- put articleID on indexed ! And author ID❌
-- governance (\_users => G(constructor set address user))
-  - voting function
-  - voting 1 article/r/c (mapping)
-  - ?? mapping address => address => uint => uint => bool (need split?)
-- ++ replace [] => mapping (compare size & gas) (ERC721Enumerable)
+- Do the crawler in Comment to find the source of a comment
+- Display who voted on what
 
 ## IPFS data architecture
 
@@ -169,16 +135,3 @@ styles = {
   }
 }
 ```
-
-## GuideLine
-
-- 5min Presentation (add architecture & technologie schema)
-- 10min Demo (register, reverts, publish, post, edit profile)
-- 15min Code (50/50 back/front)
-
-  - README cascade of contracts deployments schema
-  - hardhat project => contracts => test => scripts
-  - dapp:
-    - present briefly the react architecture
-    - select important component to show
-    - present hooks for IPFS & contract

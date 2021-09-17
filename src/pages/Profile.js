@@ -4,7 +4,7 @@ import {
   Box,
   useColorModeValue,
   Flex,
-  Skeleton,
+  Skeleton
 } from "@chakra-ui/react"
 import { useState } from "react"
 import { useEffect } from "react"
@@ -13,35 +13,75 @@ import { Link, useParams } from "react-router-dom"
 import Dashboard from "../components/Dashboard"
 import DashSide from "../components/DashSide"
 import Loading from "../components/Loading"
+import { useGovernanceContract } from "../hooks/useGovernanceContract"
 import { useIPFS } from "../hooks/useIPFS"
 import { useUsersContract } from "../hooks/useUsersContract"
+import { voteProgression } from "../components/Header"
 
 const Profile = () => {
   const { users, getUserData } = useUsersContract()
+  const { governance } = useGovernanceContract()
   const [, readIPFS] = useIPFS()
   const [user, setUser] = useState()
 
   const { id } = useParams()
 
   useEffect(() => {
-    if (users) {
-      const userData = async () => {
-        const userObj = await getUserData(users, id)
-        // get user info from IPFS
+    const userData = async () => {
+      // get blockchain info
+      const userObj = await getUserData(users, id)
 
-        const { email, laboratory, bio } = await readIPFS(userObj.profileCID)
-        const { firstName, lastName } = await readIPFS(userObj.nameCID)
-        setUser({ ...userObj, email, laboratory, bio, firstName, lastName })
-      }
-      userData()
+      // check event on this profile
+      let recoverFilter = await governance.filters.AskForRecover(
+        null,
+        Number(id)
+      )
+      let recoverEvent = await governance.queryFilter(recoverFilter)
+
+      const recoverAddress = await Promise.all(
+        recoverEvent.map(async (event) => {
+          let nbOfVote = await voteProgression(
+            governance,
+            "RecoverVoted",
+            Number(id),
+            event.args.newAddress,
+            null
+          )
+          return { address: event.args.newAddress, nbOfVote: nbOfVote.length }
+        })
+      )
+
+      // get user info from IPFS
+      const { email, laboratory, bio } = await readIPFS(userObj.profileCID)
+      const { firstName, lastName } = await readIPFS(userObj.nameCID)
+      setUser({
+        ...userObj,
+        email,
+        laboratory,
+        bio,
+        firstName,
+        lastName,
+        recoverAddress
+      })
     }
-  }, [id, getUserData, users, readIPFS])
+    if (users && governance) {
+      userData()
+      governance.on("AskForRecover", userData)
+      governance.on("RecoverVoted", userData)
+    }
+
+    return () => {
+      setUser()
+      governance?.off("AskForRecover", userData)
+      governance?.off("RecoverVoted", userData)
+    }
+  }, [id, getUserData, users, readIPFS, governance])
 
   const bg = useColorModeValue("white", "gray.800")
 
   return (
     <>
-      <Flex flexDirection={{ base: "column", lg: "row" }} flex="1">
+      <Flex flexDirection={{ base: "column", xl: "row" }} flex="1">
         {user ? (
           <DashSide user={user} />
         ) : (
@@ -65,6 +105,7 @@ const Profile = () => {
                   size="lg"
                   as={Link}
                   to="/sign-up"
+                  aria-label="Sign up button"
                 >
                   Sign up
                 </Button>

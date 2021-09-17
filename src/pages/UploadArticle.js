@@ -9,7 +9,7 @@ import {
   Container,
   useColorModeValue,
   Textarea,
-  SlideFade,
+  SlideFade
 } from "@chakra-ui/react"
 import { AddIcon, MinusIcon } from "@chakra-ui/icons"
 import { useState } from "react"
@@ -68,7 +68,8 @@ const UploadArticle = () => {
     const coAuthorArray = coAuthors.map((coAuthor) => {
       return coAuthor.address
     })
-    // transform into CID
+
+    // transform inputs into CID
     let abstractCID = ""
     let contentCID = ""
     if (userData.status === "Approved") {
@@ -82,11 +83,11 @@ const UploadArticle = () => {
       abstractCID = await pinJsObject(header)
     }
 
-    // push to the blockchain
+    // push CID to the blockchain
     const tx = await contractCall(articles, "publish", [
       coAuthorArray,
       abstractCID,
-      contentCID,
+      contentCID
     ])
 
     // unpin content if revert
@@ -102,6 +103,7 @@ const UploadArticle = () => {
     setCoAuthors([])
     setContent("")
     setTitle("")
+    setFile()
   }
 
   const scheme = useColorModeValue("colorMain", "colorSecond")
@@ -120,7 +122,7 @@ const UploadArticle = () => {
             threshold="0.1"
             delay={{ enter: 0.1 }}
             transition={{
-              enter: { duration: 0.7 },
+              enter: { duration: 0.7 }
             }}
             offsetY="0px"
             offsetX="100px"
@@ -136,7 +138,7 @@ const UploadArticle = () => {
               threshold="0.1"
               delay={{ enter: 0.1 }}
               transition={{
-                enter: { duration: 0.7 },
+                enter: { duration: 0.7 }
               }}
               offsetY="-100px"
               offsetX="0px"
@@ -167,6 +169,7 @@ const UploadArticle = () => {
                             borderStartRadius="0"
                             onClick={() => removeItem(index)}
                             colorScheme="red"
+                            aria-label="toggle button for delete coAuthors"
                           >
                             <MinusIcon />
                           </Button>
@@ -177,7 +180,11 @@ const UploadArticle = () => {
                     </Flex>
                   )
                 })}
-                <Button onClick={() => addCoAuthor(0)} colorScheme={scheme}>
+                <Button
+                  onClick={() => addCoAuthor(0)}
+                  colorScheme={scheme}
+                  aria-label="toggle button for add coAuthors"
+                >
                   <AddIcon />
                 </Button>
               </FormControl>
@@ -203,7 +210,7 @@ const UploadArticle = () => {
               threshold="0.1"
               delay={{ enter: 0.1 }}
               transition={{
-                enter: { duration: 0.7 },
+                enter: { duration: 0.7 }
               }}
               offsetY="100px"
               offsetX="0px"
@@ -228,7 +235,7 @@ const UploadArticle = () => {
               threshold="0.1"
               delay={{ enter: 0.25 }}
               transition={{
-                enter: { duration: 0.8 },
+                enter: { duration: 0.8 }
               }}
               offsetY="0px"
               offsetX="-200px"
@@ -253,6 +260,7 @@ const UploadArticle = () => {
                 }
                 onClick={publish}
                 colorScheme={scheme}
+                aria-label="submit button"
               >
                 Submit
               </Button>

@@ -40,11 +40,14 @@ const ReviewList = ({ article }) => {
 
           //get review vote
           const structReview = await reviews.reviewInfo(review.id)
-          const { vote, id } = structReview
+          const { vote } = structReview
 
           // event listener nb of vote
-          nbReviewVote = await reviews.filters.Voted(null, Number(id), null)
-          reviews.on(nbReviewVote, reviewData)
+          nbReviewVote = await reviews.filters.Voted(
+            null,
+            Number(review.id),
+            null
+          )
 
           const eventArray = await reviews.queryFilter(nbReviewVote)
           const nbVotes = eventArray.length

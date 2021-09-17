@@ -127,6 +127,7 @@ const UserSetting = ({ user }) => {
             onClick={() => addWallet(1)}
             colorScheme='green'
             transition='0.3s'
+            aria-label='submit button'
           >
             Submit
           </Button>
@@ -135,6 +136,7 @@ const UserSetting = ({ user }) => {
             ms='4'
             colorScheme='red'
             transition='0.3s '
+            aria-label='cancel button'
           >
             Cancel
           </Button>
@@ -189,6 +191,7 @@ const UserSetting = ({ user }) => {
             onClick={() => changeProfile(1)}
             colorScheme='green'
             transition='0.3s '
+            aria-label='submit button'
           >
             Submit
           </Button>
@@ -197,6 +200,7 @@ const UserSetting = ({ user }) => {
             ms='4'
             colorScheme='red'
             transition='0.3s '
+            aria-label='cancel button'
           >
             Cancel
           </Button>

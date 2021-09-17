@@ -22,7 +22,7 @@ const ArticlesContextProvider = ({ children }) => {
       const nb = await contract.totalSupply()
       const articlesList = []
 
-      // in waiting for the articleID indexed
+      // 1. List of Events
       const eventList = [
         { articleID: 0, txHash: null, timestamp: 0, blockNumber: 0 }
       ]
@@ -42,6 +42,7 @@ const ArticlesContextProvider = ({ children }) => {
       }
       setArticleEvents(eventList)
 
+      // 2. List of articles
       for (let i = 1; i <= nb; i++) {
         const obj = await getArticleData(contract, i) // i = id
 
@@ -86,11 +87,13 @@ const ArticlesContextProvider = ({ children }) => {
     if (contract && networkName === "rinkeby") {
       createArticleList()
       contract.on("Published", createArticleList)
+      contract.on("ArticleBanned", createArticleList)
     }
 
     return () => {
       setArticleList(undefined)
       contract?.off("Published", createArticleList)
+      contract?.off("ArticleBanned", createArticleList)
     }
   }, [contract, networkName])
 

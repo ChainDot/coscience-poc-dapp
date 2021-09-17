@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState } from 'react'
 import {
   Box,
   Button,
   Flex,
   InputGroup,
   Text,
-  useColorModeValue,
-} from "@chakra-ui/react"
-import { AttachmentIcon } from "@chakra-ui/icons"
+  useColorModeValue
+} from '@chakra-ui/react'
+import { AttachmentIcon } from '@chakra-ui/icons'
 
 const UploadFile = ({ file, setFile }) => {
   const [pdfSrc, setPdfSrc] = useState()
@@ -20,23 +20,24 @@ const UploadFile = ({ file, setFile }) => {
     setPdfSrc(url)
   }
 
-  const scheme = useColorModeValue("colorMain", "colorSecond")
+  const scheme = useColorModeValue('colorMain', 'colorSecond')
   return (
     <>
       <InputGroup>
         <input
           onChange={addFile}
           ref={inputRef}
-          type="file"
-          style={{ display: "none" }}
+          type='file'
+          style={{ display: 'none' }}
         />
-        <Flex mb="4" alignItems="center">
+        <Flex mb='4' alignItems='center'>
           <Button
-            display="flex"
-            me="4"
+            display='flex'
+            me='4'
             leftIcon={<AttachmentIcon />}
             colorScheme={scheme}
             onClick={() => inputRef.current.click()}
+            aria-label='choose file to upload button'
           >
             Choose a file
           </Button>
@@ -44,7 +45,7 @@ const UploadFile = ({ file, setFile }) => {
         </Flex>
       </InputGroup>
       {pdfSrc && (
-        <Box mb="4" as="embed" src={pdfSrc} width="100%" height="500px" />
+        <Box mb='4' as='embed' src={pdfSrc} width='100%' height='500px' />
       )}
     </>
   )

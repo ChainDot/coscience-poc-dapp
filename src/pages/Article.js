@@ -10,7 +10,6 @@ import {
   DrawerCloseButton,
   DrawerBody,
   DrawerHeader,
-  DrawerFooter,
   useDisclosure,
   CircularProgressLabel,
   CircularProgress,
@@ -179,6 +178,7 @@ const Article = () => {
   const bg = useColorModeValue("white", "grayOrange.900")
   const txt = useColorModeValue("main", "second")
   const scheme = useColorModeValue("colorMain", "colorSecond")
+  const bgdrawer = useColorModeValue("grayOrange.100", "grayBlue.800")
 
   // --------------------------------------------------------------RETURN
   return (
@@ -193,197 +193,214 @@ const Article = () => {
         <Container py="10" maxW="container.xl">
           {article ? (
             article.id !== 0 ? (
-              // article?.isBanned ? (<Text>Article n°{article.id} has been Banned</Text>) : ()) : ()) : (<Loading />) }
-              <>
-                <Box>
-                  <Heading
-                    fontFamily="title"
-                    fontSize="6xl"
-                    textAlign="center"
-                    p="5"
-                  >
-                    {article.title}
-                  </Heading>
-
-                  {/* Authors of the articles */}
-                  <Text my="4" fontSize="lg">
-                    <Link
-                      fontWeight="bold"
-                      as={RouterLink}
-                      to={`/profile/${article.authorID}`}
+              article?.isBanned ? (
+                <Text>Article n°{article.id} has been Banned</Text>
+              ) : (
+                <>
+                  <Box>
+                    <Heading
+                      fontFamily="title"
+                      fontSize="6xl"
+                      textAlign="center"
+                      p="5"
                     >
-                      {article.firstName} {article.lastName}
-                    </Link>
-                    <Text as="sup"> 1 </Text>,{" "}
+                      {article.title}
+                    </Heading>
+
+                    {/* Authors of the articles */}
+                    <Text my="4" fontSize="lg">
+                      <Link
+                        fontWeight="bold"
+                        as={RouterLink}
+                        to={`/profile/${article.authorID}`}
+                        aria-label="author profile redirection button"
+                      >
+                        {article.firstName} {article.lastName}
+                      </Link>
+                      <Text as="sup"> 1 </Text>,{" "}
+                      {article.coAuthors.map((coAuthor, index) => {
+                        return (
+                          <Box as="span" key={coAuthor.id}>
+                            <Link
+                              as={RouterLink}
+                              to={`/profile/${coAuthor.id}`}
+                              aria-label="coAuthor profile redirection button"
+                            >
+                              {coAuthor.firstName} {coAuthor.lastName}
+                            </Link>
+                            <Text as="sup"> {index + 2} </Text>,{" "}
+                          </Box>
+                        )
+                      })}
+                    </Text>
+
+                    <Heading fontSize="lg" as="h3">
+                      Authors' affiliations
+                    </Heading>
+                    <Text>1. {article.laboratory}</Text>
                     {article.coAuthors.map((coAuthor, index) => {
                       return (
-                        <Box as="span" key={coAuthor.id}>
-                          <Link as={RouterLink} to={`/profile/${coAuthor.id}`}>
-                            {coAuthor.firstName} {coAuthor.lastName}
-                          </Link>
-                          <Text as="sup"> {index + 2} </Text>,{" "}
-                        </Box>
+                        <Text key={coAuthor.id}>
+                          {index + 2}. {coAuthor.laboratory}
+                        </Text>
                       )
                     })}
-                  </Text>
-
-                  <Heading fontSize="lg" as="h3">
-                    Authors' affiliations
-                  </Heading>
-                  <Text>1. {article.laboratory}</Text>
-                  {article.coAuthors.map((coAuthor, index) => {
-                    return (
-                      <Text key={coAuthor.id}>
-                        {index + 2}. {coAuthor.laboratory}
-                      </Text>
-                    )
-                  })}
-                  {article.pdfFile !== "No PDF joined" ? (
-                    <Button
-                      as={Link}
-                      isExternal
-                      href={`https://ipfs.io/ipfs/${article.pdfFile}`}
-                      mt="4"
-                      variant="link"
-                      color={txt}
-                    >
-                      PDF Link
-                    </Button>
-                  ) : (
-                    <Text color="gray" mt="4">
-                      No PDF File
-                    </Text>
-                  )}
-
-                  <Heading
-                    fontSize="lg"
-                    as="h3"
-                    textTransform="uppercase"
-                    textAlign="center"
-                  >
-                    Abstract
-                  </Heading>
-                  <Text textAlign="center" my="4">
-                    {article.abstract}
-                  </Text>
-
-                  <Heading
-                    fontSize="lg"
-                    as="h3"
-                    textTransform="uppercase"
-                    textAlign="center"
-                    mt="20"
-                  >
-                    Content
-                  </Heading>
-                  {article.content ? (
-                    <Text my="4">{article.content}</Text>
-                  ) : (
-                    <Text color="gray">
-                      IPFS cannot be read at this time, try later
-                    </Text>
-                  )}
-
-                  <Heading
-                    fontSize="lg"
-                    as="h3"
-                    textTransform="uppercase"
-                    textAlign="center"
-                    mt="20"
-                    color="gray.300"
-                  >
-                    Bibliographie
-                  </Heading>
-                  <Text mb="10" textAlign="center">
-                    Not implemented yet...
-                  </Text>
-
-                  <Flex mb="10">
-                    <Button
-                      onClick={() => openDrawer(0)}
-                      colorScheme={scheme}
-                      me="4"
-                      variant="link"
-                    >
-                      Reviews (
-                      {article !== undefined ? article.reviews.length : "..."})
-                    </Button>
-                    <Button
-                      onClick={() => openDrawer(1)}
-                      colorScheme={scheme}
-                      variant="link"
-                    >
-                      Comments (
-                      {article !== undefined ? article.comments.length : "..."})
-                    </Button>
-                  </Flex>
-
-                  <Flex
-                    flexDirection={{ base: "column", lg: "row" }}
-                    justifyContent="space-between"
-                    mb="10"
-                  >
-                    <SendReview id={id} />
-                    <SendComment id={id} targetAddress={articles.address} />
-                  </Flex>
-                  <Box>
-                    {/*Owner Options */}
-                    {owner !== governance?.address ? (
-                      isOwner ? (
-                        <Button
-                          onClick={() => banArticle(id)}
-                          isLoading={
-                            status.startsWith("Waiting") ||
-                            status.startsWith("Pending")
-                          }
-                          loadingText={status}
-                          disabled={
-                            status.startsWith("Waiting") ||
-                            status.startsWith("Pending")
-                          }
-                        >
-                          Ban
-                        </Button>
-                      ) : (
-                        ""
-                      )
+                    {article?.pdfFile !== "No PDF joined" ? (
+                      <Button
+                        as={Link}
+                        isExternal
+                        href={`https://ipfs.io/ipfs/${article.pdfFile}`}
+                        mt="4"
+                        variant="link"
+                        color={txt}
+                        aria-label="pdf article content link"
+                      >
+                        PDF Link
+                      </Button>
                     ) : (
-                      <>
-                        <Button
-                          colorScheme="red"
-                          variant="outline"
-                          onClick={() => voteToBanArticle(id)}
-                          isLoading={
-                            status.startsWith("Waiting") ||
-                            status.startsWith("Pending")
-                          }
-                          loadingText={status}
-                          disabled={
-                            status.startsWith("Waiting") ||
-                            status.startsWith("Pending")
-                          }
-                        >
-                          Vote to ban this article
-                        </Button>
-                        {banVote ? (
-                          <CircularProgress
-                            ms="4"
-                            value={banVote}
-                            max="5"
-                            color="red"
+                      <Text color="gray" mt="4">
+                        No PDF File
+                      </Text>
+                    )}
+
+                    <Heading
+                      fontSize="lg"
+                      as="h3"
+                      textTransform="uppercase"
+                      textAlign="center"
+                    >
+                      Abstract
+                    </Heading>
+                    <Text textAlign="center" my="4">
+                      {article.abstract}
+                    </Text>
+
+                    <Heading
+                      fontSize="lg"
+                      as="h3"
+                      textTransform="uppercase"
+                      textAlign="center"
+                      mt="20"
+                    >
+                      Content
+                    </Heading>
+                    {article.content ? (
+                      <Text my="4">{article.content}</Text>
+                    ) : (
+                      <Text color="gray">
+                        IPFS cannot be read at this time, try later
+                      </Text>
+                    )}
+
+                    <Heading
+                      fontSize="lg"
+                      as="h3"
+                      textTransform="uppercase"
+                      textAlign="center"
+                      mt="20"
+                      color="gray.300"
+                    >
+                      Bibliographie
+                    </Heading>
+                    <Text mb="10" textAlign="center">
+                      Not implemented yet...
+                    </Text>
+
+                    <Flex mb="10">
+                      <Button
+                        onClick={() => openDrawer(0)}
+                        colorScheme={scheme}
+                        me="4"
+                        variant="link"
+                        aria-label="reviews drawer button"
+                      >
+                        Reviews (
+                        {article !== undefined ? article.reviews.length : "..."}
+                        )
+                      </Button>
+                      <Button
+                        onClick={() => openDrawer(1)}
+                        colorScheme={scheme}
+                        variant="link"
+                        aria-label="comments drawer button"
+                      >
+                        Comments (
+                        {article !== undefined
+                          ? article.comments.length
+                          : "..."}
+                        )
+                      </Button>
+                    </Flex>
+
+                    <Flex
+                      flexDirection={{ base: "column", lg: "row" }}
+                      justifyContent="space-between"
+                      mb="10"
+                    >
+                      <SendReview id={id} />
+                      <SendComment id={id} targetAddress={articles.address} />
+                    </Flex>
+                    <Box>
+                      {/*Owner Options */}
+                      {owner !== governance?.address ? (
+                        isOwner ? (
+                          <Button
+                            onClick={() => banArticle(id)}
+                            isLoading={
+                              status.startsWith("Waiting") ||
+                              status.startsWith("Pending")
+                            }
+                            loadingText={status}
+                            disabled={
+                              status.startsWith("Waiting") ||
+                              status.startsWith("Pending")
+                            }
+                            aria-label="ban button"
                           >
-                            <CircularProgressLabel>
-                              {banVote}/5
-                            </CircularProgressLabel>
-                          </CircularProgress>
+                            Ban
+                          </Button>
                         ) : (
                           ""
-                        )}
-                      </>
-                    )}
+                        )
+                      ) : (
+                        <>
+                          <Button
+                            colorScheme="red"
+                            variant="outline"
+                            onClick={() => voteToBanArticle(id)}
+                            isLoading={
+                              status.startsWith("Waiting") ||
+                              status.startsWith("Pending")
+                            }
+                            loadingText={status}
+                            disabled={
+                              status.startsWith("Waiting") ||
+                              status.startsWith("Pending")
+                            }
+                            aria-label="ban vote article button"
+                          >
+                            Vote to ban this article
+                          </Button>
+                          {banVote ? (
+                            <CircularProgress
+                              ms="4"
+                              value={banVote}
+                              max="5"
+                              color="red"
+                            >
+                              <CircularProgressLabel>
+                                {banVote}/5
+                              </CircularProgressLabel>
+                            </CircularProgress>
+                          ) : (
+                            ""
+                          )}
+                        </>
+                      )}
+                    </Box>
                   </Box>
-                </Box>
-              </>
+                </>
+              )
             ) : (
               <Heading textAlign="center">
                 Oups this article doesn't exist
@@ -403,7 +420,7 @@ const Article = () => {
         placement="bottom"
       >
         <DrawerOverlay />
-        <DrawerContent maxH="60vh">
+        <DrawerContent maxH="60vh" bg={bgdrawer}>
           <DrawerCloseButton />
           <DrawerHeader shadow="sm">Reviews & Comments</DrawerHeader>
 
@@ -411,11 +428,11 @@ const Article = () => {
             {/* TABS */}
             <Tabs defaultIndex={index} size="md" variant="enclosed">
               <TabList>
-                <Tab>
+                <Tab aria-label="tab reviews">
                   Reviews (
                   {article !== undefined ? article.reviews.length : "..."})
                 </Tab>
-                <Tab>
+                <Tab aria-label="tab comments">
                   Comments (
                   {article !== undefined ? article.comments.length : "..."})
                 </Tab>
@@ -430,8 +447,6 @@ const Article = () => {
               </TabPanels>
             </Tabs>
           </DrawerBody>
-
-          <DrawerFooter>Footer !</DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>

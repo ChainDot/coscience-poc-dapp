@@ -5,18 +5,21 @@ import {
   Text,
   Link,
   useColorModeValue,
+  HStack
 } from "@chakra-ui/react"
 import { Link as RouterLink } from "react-router-dom"
+import { FaGithub } from "react-icons/fa"
 
 const Footer = () => {
   //color Mode
   const bg = useColorModeValue("white", "grayBlue.900")
+
   return (
     <>
       <Box
         zIndex="500"
         sx={{
-          boxShadow: `0px -1px 7px ${bg === "white" ? "#DDDDDD" : "#444444"}`,
+          boxShadow: `0px -1px 7px ${bg === "white" ? "#DDDDDD" : "#444444"}`
         }}
         bg={bg}
         mt="auto"
@@ -31,15 +34,40 @@ const Footer = () => {
           align={{ base: "center", md: "center" }}
         >
           <Stack direction="row" spacing={6}>
-            <Link as={RouterLink} to="/about">
+            <Link
+              as={RouterLink}
+              to="/about"
+              aria-label="About page redirection"
+            >
               What is Coscience?
             </Link>
-            <Link as={RouterLink} to="/about">
+            <Link
+              as={RouterLink}
+              to="/about"
+              aria-label="About page redirection"
+            >
               Terms of use
             </Link>
-            <Link as={RouterLink} to="/about">
+            <Link
+              as={RouterLink}
+              to="/about"
+              aria-label="About page redirection"
+            >
               Privacy
             </Link>
+            <HStack>
+              <FaGithub alt="github icon" />
+              <Link
+                isExternal
+                href="https://github.com/RaphaelHardFork/coscience-poc-dapp/tree/version-0.1"
+                variant="link"
+                fontWeight="bold"
+                my="4"
+                aria-label="Github website redirection"
+              >
+                Github
+              </Link>
+            </HStack>
           </Stack>
           <Text>© 2020 Chakra Templates. All rights reserved</Text>
         </Container>

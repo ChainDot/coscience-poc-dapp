@@ -29,6 +29,12 @@ const createCommentList = async (comments, listOfId) => {
   return commentList
 }
 
+/* Function to find the article where comments are posted
+const fetchArticleSrc = async (articles, reviews, comments, comment) => {
+  // check target until a review or article is find
+}
+*/
+
 // HOOKS
 export const useCommentsContract = () => {
   const [comments, commentEvents] = useContext(CommentsContext)

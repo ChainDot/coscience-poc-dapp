@@ -44,7 +44,7 @@ const ArticleList = ({ articleList }) => {
         mb="10"
       >
         {articleList.map((article) => {
-          return (
+          return article.contentBanned ? (
             <Box
               borderRadius="7"
               boxShadow="lg"
@@ -52,7 +52,7 @@ const ArticleList = ({ articleList }) => {
               p="5"
               _hover={{ border: "2px", borderColor: hover }}
               transition="0.3s"
-              bg={article.title ? bgUser : bgError}
+              bg={bgError}
               border="2px"
               borderColor={border}
             >
@@ -74,6 +74,40 @@ const ArticleList = ({ articleList }) => {
                   {article.date}
                 </Text>
               </Flex>
+              <Heading mt="10">Article Banned</Heading>
+            </Box>
+          ) : (
+            <Box
+              borderRadius="7"
+              boxShadow="lg"
+              key={article.id}
+              p="5"
+              _hover={{ border: "2px", borderColor: hover }}
+              transition="0.3s"
+              bg={article.title ? bgUser : bgError}
+              border="2px"
+              borderColor={border}
+            >
+              <Flex justifyContent="space-between">
+                <Text
+                  as="span"
+                  fontSize="xs"
+                  fontWeight="bold"
+                  textTransform="uppercase"
+                  color="gray.600"
+                >
+                  Article n°{article.id}
+                </Text>
+                <Text
+                  as="span"
+                  fontSize="xs"
+                  fontWeight="bold"
+                  textTransform="uppercase"
+                  color="gray.600"
+                >
+                  {article.date}
+                </Text>
+              </Flex>
               <Heading
                 py="2"
                 fontSize="2xl"
@@ -85,6 +119,7 @@ const ArticleList = ({ articleList }) => {
                 maxW="20ch"
                 color={article.title ? txt : txtError}
                 textAlign="center"
+                aria-label="article redirection link"
               >
                 {article.title ? article.title : "Data not found..."}
               </Heading>
@@ -106,8 +141,9 @@ const ArticleList = ({ articleList }) => {
                   h={10}
                   fit="cover"
                   rounded="full"
-                  src="https://images.unsplash.com/photo-1586287011575-a23134f797f9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=48&q=60"
+                  src="https://upload.wikimedia.org/wikipedia/commons/1/14/Albert_Einstein_1947.jpg"
                   alt="Avatar"
+                  aria-label="avatar"
                 />
                 <Link
                   as={RouterLink}
@@ -117,6 +153,7 @@ const ArticleList = ({ articleList }) => {
                   mx={2}
                   fontWeight="bold"
                   color={txt}
+                  aria-label="profile author redirection link"
                 >
                   {article.firstName} {article.lastName}
                 </Link>

@@ -13,7 +13,7 @@ import Loading from "../components/Loading"
 import { useWeb3 } from "../web3hook/useWeb3"
 
 const SignUp = () => {
-  const { state, connectToMetamask } = useWeb3()
+  const { state, connectToMetamask, wcConnect } = useWeb3()
   const { userData } = useUsersContract()
 
   //color Mode
@@ -40,6 +40,7 @@ const SignUp = () => {
                       as={Link}
                       to={`/profile/${userData.id}`}
                       disabled={userData.id === undefined}
+                      aria-label="Profile Dashboard redirection button"
                     >
                       Go to your profile
                     </Button>
@@ -55,15 +56,26 @@ const SignUp = () => {
             ) : (
               <>
                 <Heading mb="6" textAlign="center">
-                  You must connect your Metamask to sign up
+                  You must connect a wallet to sign up
                 </Heading>
                 <Button
-                  colorScheme={scheme}
+                  colorScheme="colorMain"
                   display="flex"
                   mx="auto"
                   onClick={connectToMetamask}
+                  aria-label="connect metamask button"
                 >
-                  Connect your metamask
+                  Connect metamask
+                </Button>
+                <Button
+                  mt="4"
+                  colorScheme="colorSecond"
+                  display="flex"
+                  mx="auto"
+                  onClick={wcConnect}
+                  aria-label="connect WalletConnect button"
+                >
+                  Connect with Wallet Connect
                 </Button>
               </>
             )}

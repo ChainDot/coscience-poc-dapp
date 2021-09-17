@@ -116,6 +116,7 @@ const Accordion = ({ object, type }) => {
                     as={Link}
                     to={`/article/${object.id}`}
                     colorScheme={scheme}
+                    aria-label='read the article button'
                   >
                     Read the article
                   </Button>
@@ -139,6 +140,7 @@ const Accordion = ({ object, type }) => {
                   colorScheme={scheme}
                   as={Link}
                   to={`/article/${object.targetID}`}
+                  aria-label='article redirection button'
                 >
                   On article n°{object.targetID}
                 </Button>
@@ -153,6 +155,7 @@ const Accordion = ({ object, type }) => {
                   to={`/article/${articleID}`}
                   colorScheme={scheme}
                   as={Link}
+                  aria-label='article redirection button'
                 >
                   {' '}
                   On article n°{articleID}

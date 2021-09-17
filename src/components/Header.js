@@ -12,7 +12,6 @@ import {
   Heading,
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
@@ -30,6 +29,7 @@ import Notifs from "./Notifs"
 import { useGovernanceContract } from "../hooks/useGovernanceContract"
 import { useArticlesContract } from "../hooks/useArticlesContract"
 import { useReviewsContract } from "../hooks/useReviewsContract"
+import Loading from "./Loading"
 
 // Pure functions
 const itemType = (address, articles, reviews) => {
@@ -42,7 +42,7 @@ const itemType = (address, articles, reviews) => {
   }
 }
 
-const voteProgression = async (
+export const voteProgression = async (
   contract,
   eventName,
   indexed1,
@@ -72,7 +72,7 @@ const Header = () => {
   //Color mode
   const { colorMode, toggleColorMode } = useColorMode()
 
-  // get notifications
+  // get notifications, by loading here these notifications are in global in the app
   useEffect(() => {
     const getNotifs = async () => {
       const eventTab = []
@@ -80,6 +80,7 @@ const Header = () => {
       // Item events
       const banItemEvents = await governance.queryFilter("Voted")
       for (const event of banItemEvents) {
+        const block = await event.getBlock()
         const notifType = itemType(
           event.args.contractAddress,
           articles,
@@ -98,7 +99,8 @@ const Header = () => {
           itemID: event.args.itemID.toNumber(),
           progression: nbOfVote.length,
           blockNumber: event.blockNumber,
-          date: 0
+          timestamp: block.timestamp,
+          txHash: event.transactionHash
         }
         eventTab.push(obj)
       }
@@ -106,12 +108,15 @@ const Header = () => {
       // user events
       const userEvents = await governance.queryFilter("UserVoted")
       for (const event of userEvents) {
+        const block = await event.getBlock()
         const notifType =
-          event.args.voteType === 0 ? "Accept an user" : "Ban an user"
+          event.args.voteType === 0
+            ? "Vote for accept an user"
+            : "Vote for ban an user"
         const nbOfVote = await voteProgression(
           governance,
           "UserVoted",
-          null,
+          event.args.voteType,
           event.args.subjectUserID.toNumber(),
           null
         )
@@ -121,7 +126,8 @@ const Header = () => {
           itemID: event.args.subjectUserID.toNumber(),
           progression: nbOfVote.length,
           blockNumber: event.blockNumber,
-          date: 0
+          timestamp: block.timestamp,
+          txHash: event.transactionHash
         }
         eventTab.push(obj)
       }
@@ -134,13 +140,46 @@ const Header = () => {
         if (status === 2) {
           continue
         }
+        const block = await event.getBlock()
+        const nbOfVote = await voteProgression(
+          governance,
+          "UserVoted",
+          null,
+          event.args.userID.toNumber(),
+          null
+        )
         const obj = {
           notifType: "User registration pending",
           who: event.args.userID.toNumber(),
           itemID: event.args.userID.toNumber(),
-          progression: 0,
+          progression: nbOfVote.length,
           blockNumber: event.blockNumber,
-          date: 0
+          timestamp: block.timestamp,
+          txHash: event.transactionHash
+        }
+        eventTab.push(obj)
+      }
+
+      // Recover account
+      const recoverEvent = await governance.queryFilter("AskForRecover")
+      for (const event of recoverEvent) {
+        const block = await event.getBlock()
+        const nbOfVote = await voteProgression(
+          governance,
+          "RecoverVoted",
+          event.args.idToRecover.toNumber(),
+          event.args.newAddress,
+          null
+        )
+        const obj = {
+          notifType: "Recover demand created",
+          who: event.args.idToRecover.toNumber(),
+          itemID: event.args.idToRecover.toNumber(),
+          address: event.args.newAddress,
+          progression: nbOfVote.length,
+          blockNumber: event.blockNumber,
+          timestamp: block.timestamp,
+          txHash: event.transactionHash
         }
         eventTab.push(obj)
       }
@@ -151,15 +190,28 @@ const Header = () => {
     }
     if (governance && articles && reviews) {
       getNotifs()
-      // listen event
+      governance.on("Voted", getNotifs)
+      governance.on("UserVoted", getNotifs)
+      governance.on("RecoverVoted", getNotifs)
+      governance.on("AskForRecover", getNotifs)
+      users.on("Registered", getNotifs)
+      users.on("Approved", getNotifs)
     }
     return () => {
+      // clean up
       setNotifs([])
+      governance?.off("Voted", getNotifs)
+      governance?.off("UserVoted", getNotifs)
+      governance?.off("RecoverVoted", getNotifs)
+      governance?.off("AskForRecover", getNotifs)
+      users?.off("Registered", getNotifs)
+      users?.off("Approved", getNotifs)
     }
   }, [governance, articles, users, reviews])
 
   // Get informations on governance actions
   useEffect(() => {
+    // count number of pending and recover initiated (and ban initiated)
     setCount(0)
     userList.forEach((el) => {
       if (el.status === "Pending") {
@@ -186,7 +238,12 @@ const Header = () => {
         <Flex alignItems="center" justifyContent="space-between" mx="auto">
           <Flex>
             <Heading fontWeight="bold" fontFamily="title" as="h1" ml="2">
-              <Link _hover={{ textDecoration: "none" }} as={RouterLink} to="/">
+              <Link
+                _hover={{ textDecoration: "none" }}
+                as={RouterLink}
+                to="/"
+                aria-label="coscience logo to Home"
+              >
                 <Text as="span" color={co}>
                   Co
                 </Text>
@@ -252,6 +309,7 @@ const Header = () => {
                 size="sm"
                 onClick={toggleColorMode}
                 borderRadius="full"
+                aria-label="change to darkmode"
               >
                 {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               </IconButton>
@@ -287,35 +345,35 @@ const Header = () => {
                   bg="red.600"
                   rounded="full"
                   colorScheme="purple"
+                  aria-label="number of notifications"
                 >
                   {count}
                 </Badge>
                 {/* DRAWER NOTIFS */}
-                <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+                <Drawer
+                  size="md"
+                  isOpen={isOpen}
+                  placement="right"
+                  onClose={onClose}
+                >
                   <DrawerOverlay />
-                  <DrawerContent>
+                  <DrawerContent bg={bg} p="1">
                     <DrawerCloseButton />
                     <DrawerHeader>Governance notifications</DrawerHeader>
 
                     <DrawerBody>
-                      {notifs.map((notif) => {
-                        return (
-                          <Box
-                            mb="4"
-                            borderRadius="5"
-                            p="2"
-                            bg="green.100"
-                            key={notif.blockNumber}
-                          >
-                            <Notifs notif={notif} />
-                          </Box>
-                        )
-                      })}
+                      {notifs.length !== 0 ? (
+                        notifs.map((notif) => {
+                          return (
+                            <Box key={notif.txHash}>
+                              <Notifs onClose={onClose} notif={notif} />
+                            </Box>
+                          )
+                        })
+                      ) : (
+                        <Loading />
+                      )}
                     </DrawerBody>
-
-                    <DrawerFooter>
-                      <Text>FOOTER</Text>
-                    </DrawerFooter>
                   </DrawerContent>
                 </Drawer>
               </Box>

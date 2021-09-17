@@ -19,6 +19,8 @@ export const useIPFS = () => {
     let result
     try {
       setStatus("Pinning to IPFS")
+
+      // use the SDK
       result = await pinata.pinJSONToIPFS(obj, {
         pinataOptions: {
           cidVersion: 1

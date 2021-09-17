@@ -43,7 +43,11 @@ const SendReview = ({ id }) => {
   return (
     <>
       <Box minW='49%'>
-        <Button onClick={onToggle} colorScheme={scheme}>
+        <Button
+          onClick={onToggle}
+          colorScheme={scheme}
+          aria-label='add review button'
+        >
           {isOpen ? 'X' : 'Add review'}
         </Button>
 
@@ -85,6 +89,7 @@ const SendReview = ({ id }) => {
                   status.startsWith('Pending') ||
                   ipfsStatus.startsWith('Pinning')
                 }
+                aria-label='submit button'
               >
                 Submit
               </Button>

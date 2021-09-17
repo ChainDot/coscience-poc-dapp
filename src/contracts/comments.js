@@ -1,4 +1,4 @@
-export const contractAddress = "0x5DF53542eC8701f8cd6e23159305952ce394BDAE"
+export const contractAddress = "0xa72576FC292d9BD9Cddf9170a63aB221a62ae6d4"
 
 export const contractABI = [
   {
@@ -6,21 +6,21 @@ export const contractABI = [
       {
         internalType: "address",
         name: "usersContract",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "address",
         name: "articlesContract",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "address",
         name: "reviewsContract",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     stateMutability: "nonpayable",
-    type: "constructor",
+    type: "constructor"
   },
   {
     anonymous: false,
@@ -29,23 +29,23 @@ export const contractABI = [
         indexed: true,
         internalType: "address",
         name: "owner",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "address",
         name: "approved",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "Approval",
-    type: "event",
+    type: "event"
   },
   {
     anonymous: false,
@@ -54,23 +54,23 @@ export const contractABI = [
         indexed: true,
         internalType: "address",
         name: "owner",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "address",
         name: "operator",
-        type: "address",
+        type: "address"
       },
       {
         indexed: false,
         internalType: "bool",
         name: "approved",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     name: "ApprovalForAll",
-    type: "event",
+    type: "event"
   },
   {
     anonymous: false,
@@ -79,11 +79,11 @@ export const contractABI = [
         indexed: true,
         internalType: "uint256",
         name: "commentID",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "CommentBanned",
-    type: "event",
+    type: "event"
   },
   {
     anonymous: false,
@@ -92,29 +92,29 @@ export const contractABI = [
         indexed: true,
         internalType: "address",
         name: "poster",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "commentID",
-        type: "uint256",
+        type: "uint256"
       },
       {
         indexed: true,
         internalType: "address",
         name: "target",
-        type: "address",
+        type: "address"
       },
       {
         indexed: false,
         internalType: "uint256",
         name: "targetID",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "Posted",
-    type: "event",
+    type: "event"
   },
   {
     anonymous: false,
@@ -123,23 +123,23 @@ export const contractABI = [
         indexed: true,
         internalType: "address",
         name: "from",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "address",
         name: "to",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "Transfer",
-    type: "event",
+    type: "event"
   },
   {
     anonymous: false,
@@ -148,81 +148,81 @@ export const contractABI = [
         indexed: true,
         internalType: "uint256",
         name: "commentID",
-        type: "uint256",
+        type: "uint256"
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "userID",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "Voted",
-    type: "event",
+    type: "event"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "to",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "approve",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "owner",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     name: "balanceOf",
     outputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "commentID",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "banPost",
     outputs: [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "commentID",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "commentInfo",
     outputs: [
@@ -231,94 +231,113 @@ export const contractABI = [
           {
             internalType: "bool",
             name: "contentBanned",
-            type: "bool",
+            type: "bool"
           },
           {
             internalType: "uint256",
             name: "id",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "uint256",
             name: "vote",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "uint256",
             name: "targetID",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "address",
             name: "target",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "address",
             name: "author",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "string",
             name: "contentCID",
-            type: "string",
+            type: "string"
           },
           {
             internalType: "uint256[]",
             name: "comments",
-            type: "uint256[]",
-          },
+            type: "uint256[]"
+          }
         ],
         internalType: "struct Comments.Comment",
         name: "",
-        type: "tuple",
-      },
+        type: "tuple"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "getApproved",
     outputs: [
       {
         internalType: "address",
         name: "",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "owner",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "address",
         name: "operator",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     name: "isApprovedForAll",
     outputs: [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "commentID",
+        type: "uint256"
+      }
+    ],
+    name: "isComment",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
   },
   {
     inputs: [],
@@ -327,147 +346,147 @@ export const contractABI = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "ownerOf",
     outputs: [
       {
         internalType: "address",
         name: "",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "string",
         name: "contentCID",
-        type: "string",
+        type: "string"
       },
       {
         internalType: "address",
         name: "target",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "uint256",
         name: "targetID",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "post",
     outputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "from",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "address",
         name: "to",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "safeTransferFrom",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "from",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "address",
         name: "to",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
+        type: "uint256"
       },
       {
         internalType: "bytes",
         name: "_data",
-        type: "bytes",
-      },
+        type: "bytes"
+      }
     ],
     name: "safeTransferFrom",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "operator",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "bool",
         name: "approved",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     name: "setApprovalForAll",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "bytes4",
         name: "interfaceId",
-        type: "bytes4",
-      },
+        type: "bytes4"
+      }
     ],
     name: "supportsInterface",
     outputs: [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -476,73 +495,73 @@ export const contractABI = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "index",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "tokenByIndex",
     outputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "owner",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "uint256",
         name: "index",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "tokenOfOwnerByIndex",
     outputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "tokenURI",
     outputs: [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -551,52 +570,52 @@ export const contractABI = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "from",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "address",
         name: "to",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "transferFrom",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "commentID",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "vote",
     outputs: [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "nonpayable",
-    type: "function",
-  },
+    type: "function"
+  }
 ]

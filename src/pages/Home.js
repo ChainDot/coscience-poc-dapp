@@ -20,6 +20,7 @@ const Home = () => {
   useEffect(() => {
     if (users && articleList !== undefined) {
       ;(async () => {
+        // fetch data from IPFS
         const asyncRes = await Promise.all(
           articleList.map(async (article) => {
             const userID = await users.profileID(article.author)
@@ -32,7 +33,7 @@ const Home = () => {
               title,
               abstract,
               firstName,
-              lastName,
+              lastName
             }
           })
         )
